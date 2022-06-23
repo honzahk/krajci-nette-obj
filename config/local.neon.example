@@ -1,0 +1,10 @@
+parameters:
+
+
+database:
+	dsn: 'mysql:host=127.0.0.1;dbname=krajci_nette_web_do_mode'
+	user: krajcinette
+	password: krajcinette
+	options:
+		lazy: yes
+                # lazy option udela, ze se pri inicializaci Connection hned nepripoji, ale az pri prvnim pozadavku na databazi
