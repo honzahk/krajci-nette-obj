@@ -1,0 +1,57 @@
+#
+# WARNING: it is CRITICAL that this file & directory are NOT accessible directly via a web browser!
+# https://nette.org/security-warning
+#
+parameters:
+        # Role.
+        guest: guest
+        member: member
+        admin: admin
+
+        # Presentery.
+        error: Error
+        home: Homepage
+        sign: Sign
+        users: User
+        partners: Partner
+        orders: Order
+        cart: Cart
+        ajaxtest: AjaxTest
+
+
+
+# Časová zóna.
+php:
+        date.timezone: Europe/Prague
+
+application:
+        # Presenter pro zpracování vyjímek a chyb aplikace.
+        # errorPresenter: Error
+        errorPresenter: %error%
+
+        # Přesměrovat výjimky přímo už na ErrorPresenter, jinak jdou standardně na laděnku. (Hodí se obzvláště při debuggování ErrorPresentetu.)
+        # catchExceptions: true # Může mít i hodnotu `yes`.
+
+        # Standardní mapování cesty k prezenterům. (Dá se i pozměnit, ale ne všechna nastavení jsou podporována.)
+        mapping:
+            *: App\*Module\Presenters\*Presenter
+
+# Aktivuje panel pro DI v Debugger baru.
+di:
+        debugger: true
+        export:
+                parameters: no
+                tags: no
+
+# Nastavení sessions v rámci celé aplikace.
+session:
+        # pro oddeleni session v ramci localhostu (+services:nette.userStorage:setup:- setNamespace('krajci-nette-obj'))
+        name: krajcinetteobj
+        expiration: 14 days
+
+# Nastavení společných rolí v rámci celé aplikace pomocí statického ACL.
+security:
+        roles:
+                guest:
+                member: [guest]
+                admin:

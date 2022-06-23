@@ -1,0 +1,169 @@
+{**
+ * @param string   $basePath web base path
+ * @param array    $flashes  flash messages
+ *}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{ifset title}{include title|stripHtml}{/ifset}</title>
+    <!--  Bootstrap start  -->
+    <link href="{$basePath}/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!--  v teto sablone musi byt jquery nahrane zde v hlavicce, jinak nefunguje levy horni navbar - un/collapsing  -->
+    <script src="{$basePath}/js/jquery-3.6.0.min.js"></script>
+    <!--  Bootstrap end  -->
+    <link href="{$basePath}/css/w3colors.css" rel="stylesheet">
+    <link href="{$basePath}/css/bootstrap_menu_style.css" rel="stylesheet">
+    <link href="{$basePath}/css/style.css" rel="stylesheet">
+
+    <!--  Navigation collapsing - disable alert  -->
+    <script type="text/javascript">
+        //window.alert = function(){};
+    </script>
+    {block head}{/block}    
+</head>
+
+<body>
+<div id="wrapper">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+    			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        			<span class="sr-only">Toggle navigation</span>
+        			<span class="icon-bar"></span>
+        			<span class="icon-bar"></span>
+        			<span class="icon-bar"></span>
+    			</button>
+                <div  class="navbar-brand">
+                    <a id="menu-toggle" href="#" class="glyphicon glyphicon-align-justify btn-menu toggle">
+                        <i class="fa fa-bars"></i>
+                    </a>
+    				<a n:href="Homepage:">Portál Krajči</a>
+                </div>
+			</div>
+			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+                                    <li n:class="$presenter->isLinkCurrent('Homepage:contact') ? active">
+                                        <a n:href="Homepage:contact">Kontakt</a>
+                                    </li>
+				</ul>
+                                <ul class="nav navbar-nav navbar-right">
+    {if $user->loggedIn}
+                                    <li><a n:href="Sign:out"><span class="glyphicon glyphicon-log-out"></span> Odhlásit ({$user->identity->login})</a></li>
+    {else}
+                                    <li n:class="$presenter->isLinkCurrent('Sign:in') ? active">
+                                        <a n:href="Sign:in"><span class="glyphicon glyphicon-log-in"></span> Přihlásit</a>
+                                    </li>
+    {/if}
+                                </ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</nav>
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper">
+        <nav id="spy">
+            <ul class="sidebar-nav nav">
+    {if $user->loggedIn}
+        {*
+                <li><a n:href="Sign:out"><span class="glyphicon glyphicon-log-out"></span> Odhlásit ({$user->identity->login})</a></li>
+        *}
+                <li n:class="$presenter->isLinkCurrent('Partner:default') ? active">
+                    <a n:href="Partner:default">Pobočky</a>
+                </li>
+                <li n:class="$presenter->isLinkCurrent('User:default') ? active">
+                    <a n:href="User:default">Uživatel</a>
+                </li>
+                {*
+                <li n:class="$presenter->isLinkCurrent('User:editAccount') ? active">
+                    <a n:href="User:editAccount">Úprava loginu a emailu uživatele</a>
+                </li>
+                <li n:class="$presenter->isLinkCurrent('User:editPassword') ? active">
+                    <a n:href="User:editPassword">Změna hesla</a>
+                </li>
+                *}
+        {if $user->loggedIn}
+            {ifset $partnerAkt}
+                <li n:class="$presenter->isLinkCurrent('Cart:default') ? active">
+                    <a n:href="Cart:default">Košík</a>                    
+                </li>
+                <li n:class="$presenter->isLinkCurrent('Partner:itemList') ? active">
+                    <a n:href="Partner:itemList">Zboží</a>                    
+                </li>
+            {/ifset}                                
+        {/if}                        
+    {else}
+                <li n:class="$presenter->isLinkCurrent('Sign:in') ? active">
+                    <a n:href="Sign:in"><span class="glyphicon glyphicon-log-in"></span> Přihlásit</a>
+                </li>
+    {/if}
+            </ul>
+        </nav>
+    </div>
+    <!-- Page content -->
+    <div id="page-content-wrapper">
+        <div class="page-content">
+            <div class="container-fluid">
+        {foreach $flashes as $flash}
+                <div n:class="alert, $flash->type">
+                    {$flash->message}
+                </div>
+        {/foreach}
+
+    {if $user->loggedIn}
+        {ifset $partnerAkt}
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <h3><a n:href="Partner:show $partnerID">{$partnerAkt['nazev']}</a></h3>
+                            </div>
+                            <div class="panel-body" n:ifset="$zavoz" >
+                                {ifset $zavoz['trasaDate']}<h5>Datum závozu: {$zavoz['trasaDate']|date:'%d.%m.%Y'} (trasa č.{$zavoz['trasaID']})</h5>{/ifset}
+                            </div>    
+                        </div>
+                    </div>
+                </div>
+        {/ifset}                        
+    {/if}                        
+                <div class="row">
+                    <div class="col-xs-12">
+                    {include content}
+                    </div>
+                </div>
+            </div>
+                <footer id="myFooter">
+            <div class="container-fluid w3-black">
+                    <p> </p>
+                    <p>Objednávkový systém Krajči plus s.r.o.</p>
+            </div>
+                </footer>
+        </div>
+    </div>
+</div>
+    <script type="text/javascript">
+	/*Menu-toggle*/
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("active");
+        //alert(1);
+    });
+    </script>
+    <!--  Bootstrap start  -->
+    <!--  v teto sablone musi byt jquery nahrane v hlavicce, jinak nefunguje levy horni navbar - un/collapsing  -->
+    <!--  <script src="{$basePath}/js/jquery-3.6.0.slim.min.js"></script>  -->
+    <script src="{$basePath}/bootstrap/js/bootstrap.min.js"></script>
+    <!--  Bootstrap end  -->
+    <!--  script src="https://nette.github.io/resources/js/3/netteForms.min.js"></script> -->
+    <script src="{$basePath}/js/netteForms3.min.js"></script>
+    <script src="{$basePath}/js/nette.ajax.js"></script>
+    <script type="text/javascript">
+    $(function () {
+	$.nette.init();        
+    });
+    </script>
+{block scripts}{/block}        
+</body>
+</html>

@@ -1,0 +1,13 @@
+{block content}
+
+    <h1 n:block=title class="w3-text-teal">Editace uživatele</h1>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3>Editace uživatele {$userDetail[login]}:</h3>
+        </div>
+        <div class="panel-body">{include 'detail.latte'}</div>    
+    </div>
+        
+{control editorForm}
+      
+{/block}

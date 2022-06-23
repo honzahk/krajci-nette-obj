@@ -1,0 +1,55 @@
+# Nastavení vlastních služeb dále přístupných pomocí DI v rámci celé aplikace.
+# services:
+# 	- App\Router\RouterFactory::createRouter
+
+# Nastavení vlastních služeb dále přístupných pomocí DI v rámci celé aplikace.
+services:
+        nette.userStorage:
+            setup:
+                # pro oddeleni session v ramci localhostu (+session: name: krajcinetteobj)
+                - setNamespace('krajci-nette-obj')
+        router: App\Router\RouterFactory::createRouter
+        authenticator: App\Model\UserManager # Nastavení přihlašování do aplikace.
+        security.authorizator: # Nastavení zdrojů a pravidel přístupu k nim v rámci celé aplikace pomocí statického ACL.
+                setup:
+                        - addResource(%error%)
+                        - allow(%guest%, %error%)
+                        - allow(%admin%) # adminovi povol vše
+                        - addResource(%home%)
+                        - allow(%guest%, %home%, 'default') # povolení guest a member akcí z homepage po jednom
+                        - allow(%guest%, %home%, 'about')
+                        - allow(%guest%, %home%, 'contact')
+                        - allow(%member%, %home%, 'userInfo')
+                        - addResource(%sign%)
+                        - allow(%guest%, %sign%, 'in')
+                        - allow(%member%, %sign%, 'out')
+                        - addResource(%users%)
+                        - allow(%member%, %users%)
+                        - addResource(%partners%)
+                        - allow(%member%)
+                        - addResource(%orders%)
+                        - allow(%member%)
+                        - addResource(%cart%)
+                        - allow(%member%)
+                        - addResource(%ajaxtest%)
+                        - allow(%member%)
+                        # toto allow/deny moc nefunguje, protoze member: [guest] zpusobi,
+                        # se userInfo zakaze i pro member
+                        # - allow(%guest%, %home%) # guest a member mohou vykonat všechny akce z homepage
+                        #- deny(%guest%, %home%, 'userInfo') # guest zakaz UserInfo
+
+        # Nastavení dalších služeb v rámci celé aplikace dále přístupných pomocí DI.
+        # - App\Model\UserManager
+        - App\Model\PartnerManager
+        - App\Model\CartManager
+        - App\Forms\FormFactory
+        - App\Forms\SignInFormFactory
+        # - App\Forms\DateRangeFormFactory
+        #- \IDateTimeRangeFormFactory
+        # - App\Forms\IDateTimeRangeFormFactory
+
+# Vložení konfiguračních souborů z jednotlivých modulů.
+includes:
+#        - ../AdminModule/config/config.neon
+#        - ../MemberModule/config/config.neon
+#        - ../PublicModule/config/config.neon

@@ -1,0 +1,131 @@
+{block content}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 n:block=title>{$item->nazev}</h3>
+        </div>
+        {snippet itemsContainer}
+        <div class="panel-body">
+            <div class="container-fluid">
+                <div class="row">          
+                    <div class="col-xs-3 col-md-3 baleni">Počet v balení</div>
+                    <div class="col-xs-3 col-md-3 baleni">Cena za ks</div>
+                    <div class="col-xs-3 col-md-3 baleni">Počet v košíku</div>
+                    <div class="col-xs-3 col-md-3 baleni">Balení v košíku</div>
+                </div>
+                <div class="row">          
+                    <div class="col-xs-3 col-md-3 baleni">{$item->baleni}</div>
+                    <div class="col-xs-3 col-md-3 baleni">{$item->cena_zbozi_bez_dph|number:2, ',', ' '}</div>
+                    <div class="col-xs-3 col-md-3 baleni" n:snippet="item-$item->zbozi_id">{if $item->pocet > 0}{$item->pocet}{else}&nbsp;{/if}</div>
+                    <div class="col-xs-3 col-md-3 baleni" n:snippet="item-$item->zbozi_id-bal">{if $item->pocet > 0}{= intdiv($item->pocet,$item->baleni)} {if fmod($item->pocet,$item->baleni)>0}({= fmod($item->pocet,$item->baleni)}){/if}{else}&nbsp;{/if}</div>
+                </div>
+            </div>            
+        </div>            
+<form n:name=itemEditorForm>
+        <div class="panel-footer">
+            <div class="container-fluid">
+            {if $form->getOwnErrors()}
+                <div class="row">          
+                    <div class="col-xs-12 col-md-12 alert alert-danger" n:foreach="$form->getOwnErrors() as $error">
+                        {$error}
+                    </div>
+                </div>
+            {/if}            
+            {if $form['pocet_bal']->getError()}
+                <div class="row">
+                    <div class="col-xs-12 col-md-12 alert alert-danger">
+                        {inputError pocet_bal}
+                    </div>
+                </div>
+            {/if}
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-inline">
+                            {label pocet_bal /}<input n:name=pocet_bal class="input-number">
+                            <label n:if="$item->baleni<>$item->min_obj" class="form-check-label pulka-checkbox" for="frm-itemEditorForm-pulka">
+                                <input n:name=pulka>+ půl balení
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-md-4"><input n:name=send class="btn btn-primary button" value="Uložit"></div>
+                    {*
+                    <div class="col-xs-6 col-md-2" n:if="$item->baleni<>$item->min_obj" n:snippet="item-$item->zbozi_id-btn">
+                        {if fmod($item->pocet,$item->baleni)>0}
+                        <a n:href="updatePulka! $item->zbozi_id,-$item->min_obj" class="ajax btn btn-info">-1/2</a>
+                        {else}
+                        <a n:href="updatePulka! $item->zbozi_id,+$item->min_obj" class="ajax btn btn-info">+1/2</a>                            
+                        {/if}
+                    </div>                    
+                    *}
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="1">1</a></div>
+                    <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="2">2</a></div>
+                    <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="3">3</a></div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="4">4</a></div>
+                    <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="5">5</a></div>
+                    <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="6">6</a></div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="7">7</a></div>
+                    <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="8">8</a></div>
+                    <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="9">9</a></div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="CLR">CLR</a></div>
+                    <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="0">0</a></div>
+                    <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="BACK">BACK</a></div>
+                </div>
+            </div>
+        </div>
+</form>                    
+        {/snippet}
+    </div>
+    
+{* control itemEditorForm *}
+        
+    <div class="panel panel-info">
+        <div class="btn-group btn-group-justified">            
+            {ifset $item->kategorie_id}
+            <a n:href="Partner:itemList $item->kategorie_id" class="btn btn-primary">Zpět</a>
+            {else}
+            <a n:href="Partner:itemList" class="btn btn-primary">Zpět</a>
+            {/ifset}
+        </div>
+    </div>        
+{/block}
+
+{block scripts}
+<script id="rendered-js" type="text/javascript">
+    $('.btn-number').click(function (e) {
+        e.preventDefault();
+        var input = $("input[name='pocet_bal']");  
+        type = $(this).attr('data-type');
+        var currentVal = input.val();
+        
+        //console.log(currentVal);
+        //console.log(type);    
+        
+        if (type == 'CLR') {
+            currentVal = '';
+        } else if (type == 'BACK') {
+            if (currentVal.length) {
+                currentVal = currentVal.substr(0,currentVal.length-1);
+            }            
+        } else {
+            currentVal += type;
+        }
+        input.val(currentVal).change();
+    });
+    $('.pulka-checkbox').click(function (e) {
+        //e.preventDefault();
+        var input = $("input[name='pocet_bal']");          
+        var currentVal = input.val();
+        if (currentVal == '') {
+            currentVal = '0';
+            input.val(currentVal).change();
+        }
+    });
+</script>
+{/block}        

@@ -1,0 +1,25 @@
+{block content}    
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h1 n:block=title>Detail pobočky č.{$partner[id]}</h1>
+        </div>
+        <div class="panel-body">
+            <table class="table table-striped">
+              <tr><td>Název:</td><td>{$partner[nazev]}</td></tr>
+              {if $partner[nazev2]}
+              <tr><td>Název 2:</td><td>{$partner[nazev2]}</td></tr>
+              {/if}
+              <tr><td>Ulice:</td><td>{$partner[ulice]}</td></tr>
+              <tr><td>Město:</td><td>{$partner[mesto]}</td></tr>
+              <tr><td>IČ:</td><td>{$partner[ic]}</td></tr>
+              <tr><td>DIČ:</td><td>{$partner[dic]}</td></tr>
+            </table>
+        </div>    
+    </div>
+    <div class="panel panel-info">
+        <div class="btn-group btn-group-justified">
+            <a n:href="vyberPartnera $partner[id]" class="btn btn-primary">Vyber pobočku</a>
+        </div>
+    </div>
+{/block}
+

@@ -1,0 +1,22 @@
+.row {
+   margin-top: 5px;
+   padding-top: 5px;
+   padding-bottom: 5px;
+}
+
+.baleni {
+    text-align: right;
+}
+
+/* @media (max-width: 768px) { */
+@media (max-width: 992px) {
+    .baleni {
+        text-align: left;
+    }
+    .row {
+       margin-top: 5px;
+       padding-top: 5px;
+       padding-bottom: 5px;
+    }
+      
+  }
