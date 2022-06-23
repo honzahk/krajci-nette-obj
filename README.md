@@ -1,3 +1,3 @@
 # krajci-nette-obj
 
-welcome 1
+welcome 2
