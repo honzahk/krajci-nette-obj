@@ -1,0 +1,1 @@
+# krajci-nette-obj
