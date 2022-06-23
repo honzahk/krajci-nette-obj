@@ -1,0 +1,63 @@
+{block content}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 n:block=title>Zboží k objednání</h3>
+        </div>
+        <div class="panel-body">
+            {*$cartID*}
+        {snippet itemsContainer}
+            {var $cartTotal = 0}
+        {foreach $items as $r}
+            {do $cartTotal += $r->pocet*$r->cena_zbozi_bez_dph}
+            {if $iterator->first}
+            {var $kategorie = $r->kategorie_id}
+            {var $color = true}           
+            <table class="table table-striped">
+            <tr>
+              <th>Název</th>
+              <th class="text-right">Počet v balení</th>
+              <th class="text-right">Cena za ks</th>
+              <th class="text-right">Počet v košíku</th>             
+              <th class="text-right">Balení v košíku</th>             
+              <th>+bal</th>             
+              <th>-bal</th>             
+              <th>+1/2</th>             
+              <th>-1/2</th>             
+            </tr>
+            {else}
+                {if $kategorie != $r->kategorie_id}
+                    {do $kategorie = $r->kategorie_id}
+                    {do $color = !$color}           
+                {/if}
+            {/if}
+
+            <tr id="row-{$iterator->counter}" {if $color}class="danger"{else}class="info"{/if}>
+                <td>{$r->nazev}</td>
+                <td class="text-right">{$r->baleni}</td>
+                <td class="text-right">{$r->cena_zbozi_bez_dph|number:2, ',', ' '}</td>
+                <td class="text-right" n:snippet="item-$r->zbozi_id">{if $r->pocet > 0}{$r->pocet}{/if}</td>
+                <td class="text-right" n:snippet="item-$r->zbozi_id-bal">{if $r->pocet > 0}{= intdiv($r->pocet,$r->baleni)} {if fmod($r->pocet,$r->baleni)>0}({= fmod($r->pocet,$r->baleni)}){/if}{/if}</td>
+                {*
+                <td><a n:href="upravPocet $r->zbozi_id,-$r->baleni" class="btn btn-primary">-{$r->baleni}</td>
+                <td><a n:href="upravPocet $r->zbozi_id,$r->baleni" class="btn btn-primary">+{$r->baleni}</td>
+                <td n:if="$r->baleni<>$r->min_obj"><a n:href="upravPocet $r->zbozi_id,-$r->min_obj" class="btn btn-info">-{$r->min_obj}</td>
+                <td n:if="$r->baleni<>$r->min_obj"><a n:href="upravPocet $r->zbozi_id,$r->min_obj" class="btn btn-info">+{$r->min_obj}</td>
+                *}
+                <td><a n:href="updatePocet! $r->zbozi_id,-$r->baleni" class="ajax btn btn-primary">-{$r->baleni}</a></td>
+                <td><a n:href="updatePocet! $r->zbozi_id,$r->baleni" class="ajax btn btn-primary">+{$r->baleni}</a></td>
+                <td n:if="$r->baleni<>$r->min_obj"><a n:href="updatePocet! $r->zbozi_id,-$r->min_obj" class="ajax btn btn-info">-{$r->min_obj}</a></td>
+                <td n:if="$r->baleni<>$r->min_obj"><a n:href="updatePocet! $r->zbozi_id,$r->min_obj" class="ajax btn btn-info">+{$r->min_obj}</a></td>
+            </tr>
+
+            {if $iterator->last}</table>{/if}
+        {/foreach}
+        </div>    
+
+        {*
+        <div class="panel-footer" n:if="$cartTotal > 0">
+            Celkem bez DPH: {$cartTotal|number:2, ',', ' '}
+        </div>                
+        *}
+        {/snippet}
+    </div>
+{/block}

@@ -38,8 +38,8 @@ class PartnerManager extends BaseManager
 
     /**
      * Vrátí seznam partnerů v databázi daného uživatele.
-     * @param string $userID ID uživatele
-     * @return Selection seznam partnerů
+     * @param int $userID ID uživatele
+     * @return Resultset
      */
     public function getPartners($userID = NULL)
     {
@@ -58,8 +58,9 @@ class PartnerManager extends BaseManager
     /**
      * Vrátí partnera konkrétního uživatele z databáze podle jeho ID.
      * Zároveň kontroluje, jestli uživatel může s partnerem pracovat.
-     * @param $userID ID uživatele, string $pID ID partnera
-     * @return bool|mixed|IRow o.m. nebo false při neúspěchu
+     * @param int $userID ID uživatele
+     * @param int $pID ID partnera
+     * @return bool|mixed|IRow
      */
     public function getUserPartner($userID, $pID)
     {
@@ -85,7 +86,7 @@ class PartnerManager extends BaseManager
      * Vrátí partnera z databáze podle jeho ID.
      * Nekontroluje, jestli přihlášený uživatel může s partnerem pracovat.
      * @param string $id ID partnera
-     * @return bool|mixed|IRow o.m. nebo false při neúspěchu
+     * @return bool|mixed|IRow
      */
     public function getPartner($id)
     {
@@ -96,62 +97,191 @@ class PartnerManager extends BaseManager
      * Vrátí zboží partnera s aktuálními cenami a označením množství, které 
      * je již v košíku konkrétního uživatele.
      * U každého zboží vrací také kategorii.
-     * @param string $pID ID partnera
-     * @return bool|mixed|IRow o.m. nebo false při neúspěchu
+     * @param int $userID ID uživatele
+     * @param int $pID ID partnera
+     * @return Resultset
      */
     public function getUserPartnerZbozi($userID, $pID)
     {
         return $this->database->query(
-        "SELECT cr.zbozi_id,z.nazev,z.zkratka,z.kod,z.ean,z.baleni,z.paleta,
-        z.jednotka,z.dph,z.hmotnost,z.objemova_jednotka,z.min_obj,
-        cr.cena_bez_dph AS cena_zakladni_bez_dph,car.prodejni_cena_bez_dph AS cena_akcni_bez_dph,
-        DATE_ADD(ca.platnost_od, INTERVAL -3 DAY) AS akcni_od,ca.platnost_do AS akcni_do,
-        IF ((NOW() BETWEEN DATE_ADD(ca.platnost_od, INTERVAL -3 DAY) AND ca.platnost_do) 
-        AND (car.prodejni_cena_bez_dph IS NOT NULL), car.prodejni_cena_bez_dph, cr.cena_bez_dph) AS cena_zbozi_bez_dph,
-        c.id AS cart_id, cz.pocet, kz.kategorie_id, k.nazev AS kategorie_nazev
-        FROM partner p
-        JOIN ceniky_radky cr ON cr.cenik_id = p.cenik_id AND cr.cena_bez_dph > 0
-        JOIN zbozi z ON z.id = cr.zbozi_id
-        LEFT JOIN cart c ON c.user_id = ? AND c.partner_id = p.id
-        LEFT JOIN cart_zbozi cz ON cz.zbozi_id = cr.zbozi_id AND c.id = cz.cart_id
-        LEFT JOIN ceniky_akcni_radky car ON car.cenik_akcni_id = p.cenik_akcni_id 
-        AND car.zbozi_id = cz.zbozi_id AND car.prodejni_cena_bez_dph > 0
-        LEFT JOIN ceniky_akcni ca ON ca.id = p.cenik_akcni_id
-        LEFT JOIN kategorie_zbozi kz ON kz.zbozi_id = cr.zbozi_id 
-        LEFT JOIN kategorie k ON k.id = kz.kategorie_id
-        WHERE p.id = ? ORDER BY kategorie_id,poradi_id", $userID, $pID);
+            "SELECT cr.zbozi_id,z.nazev,z.zkratka,z.kod,z.ean,z.baleni,z.paleta,
+            z.jednotka,z.dph,z.hmotnost,z.objemova_jednotka,z.min_obj,
+            cr.cena_bez_dph AS cena_zakladni_bez_dph,car.prodejni_cena_bez_dph AS cena_akcni_bez_dph,
+            DATE_ADD(ca.platnost_od, INTERVAL -3 DAY) AS akcni_od,ca.platnost_do AS akcni_do,
+            IF ((NOW() BETWEEN DATE_ADD(ca.platnost_od, INTERVAL -3 DAY) AND ca.platnost_do) 
+            AND (car.prodejni_cena_bez_dph IS NOT NULL), car.prodejni_cena_bez_dph, cr.cena_bez_dph) AS cena_zbozi_bez_dph,
+            c.id AS cart_id, cz.pocet, kz.kategorie_id, k.nazev AS kategorie_nazev
+            FROM partner p
+            JOIN ceniky_radky cr ON cr.cenik_id = p.cenik_id AND cr.cena_bez_dph > 0
+            JOIN zbozi z ON z.id = cr.zbozi_id
+            LEFT JOIN cart c ON c.user_id = ? AND c.partner_id = p.id
+            LEFT JOIN cart_zbozi cz ON cz.zbozi_id = cr.zbozi_id AND c.id = cz.cart_id
+            LEFT JOIN ceniky_akcni_radky car ON car.cenik_akcni_id = p.cenik_akcni_id 
+            AND car.zbozi_id = cz.zbozi_id AND car.prodejni_cena_bez_dph > 0
+            LEFT JOIN ceniky_akcni ca ON ca.id = p.cenik_akcni_id
+            LEFT JOIN kategorie_zbozi kz ON kz.zbozi_id = cr.zbozi_id 
+            LEFT JOIN kategorie k ON k.id = kz.kategorie_id
+            WHERE p.id = ? ORDER BY kategorie_id,poradi_id", $userID, $pID
+                );
     }    
 
     /**
      * Pro AJAX - Vrátí konkrétní zboží partnera s aktuálními cenami a označením 
      * množství, které je již v košíku konkrétního uživatele.
      * U zboží vrací také kategorii.
-     * @param type $userID
-     * @param type $pID
-     * @param type $zboziID
-     * @return type
+     * @param int $userID
+     * @param int $pID
+     * @param int $zboziID
+     * @return Resultset
+     * 
      */
     public function getUserPartnerZboziID($userID, $pID, $zboziID)
     {
         return $this->database->query(
-        "SELECT cr.zbozi_id,z.nazev,z.zkratka,z.kod,z.ean,z.baleni,z.paleta,
-        z.jednotka,z.dph,z.hmotnost,z.objemova_jednotka,z.min_obj,
-        cr.cena_bez_dph AS cena_zakladni_bez_dph,car.prodejni_cena_bez_dph AS cena_akcni_bez_dph,
-        DATE_ADD(ca.platnost_od, INTERVAL -3 DAY) AS akcni_od,ca.platnost_do AS akcni_do,
-        IF ((NOW() BETWEEN DATE_ADD(ca.platnost_od, INTERVAL -3 DAY) AND ca.platnost_do) 
-        AND (car.prodejni_cena_bez_dph IS NOT NULL), car.prodejni_cena_bez_dph, cr.cena_bez_dph) AS cena_zbozi_bez_dph,
-        c.id AS cart_id, cz.pocet, kz.kategorie_id, k.nazev AS kategorie_nazev
-        FROM partner p
-        JOIN ceniky_radky cr ON cr.cenik_id = p.cenik_id AND cr.cena_bez_dph > 0
-        JOIN zbozi z ON z.id = cr.zbozi_id
-        LEFT JOIN cart c ON c.user_id = ? AND c.partner_id = p.id
-        LEFT JOIN cart_zbozi cz ON cz.zbozi_id = cr.zbozi_id AND c.id = cz.cart_id
-        LEFT JOIN ceniky_akcni_radky car ON car.cenik_akcni_id = p.cenik_akcni_id 
-        AND car.zbozi_id = cz.zbozi_id AND car.prodejni_cena_bez_dph > 0
-        LEFT JOIN ceniky_akcni ca ON ca.id = p.cenik_akcni_id
-        LEFT JOIN kategorie_zbozi kz ON kz.zbozi_id = cr.zbozi_id 
-        LEFT JOIN kategorie k ON k.id = kz.kategorie_id
-        WHERE p.id = ? AND cr.zbozi_id = ?", $userID, $pID, $zboziID);
+            "SELECT cr.zbozi_id,z.nazev,z.zkratka,z.kod,z.ean,z.baleni,z.paleta,
+            z.jednotka,z.dph,z.hmotnost,z.objemova_jednotka,z.min_obj,
+            cr.cena_bez_dph AS cena_zakladni_bez_dph,car.prodejni_cena_bez_dph AS cena_akcni_bez_dph,
+            DATE_ADD(ca.platnost_od, INTERVAL -3 DAY) AS akcni_od,ca.platnost_do AS akcni_do,
+            IF ((NOW() BETWEEN DATE_ADD(ca.platnost_od, INTERVAL -3 DAY) AND ca.platnost_do) 
+            AND (car.prodejni_cena_bez_dph IS NOT NULL), car.prodejni_cena_bez_dph, cr.cena_bez_dph) AS cena_zbozi_bez_dph,
+            c.id AS cart_id, cz.pocet, kz.kategorie_id, k.nazev AS kategorie_nazev
+            FROM partner p
+            JOIN ceniky_radky cr ON cr.cenik_id = p.cenik_id AND cr.cena_bez_dph > 0
+            JOIN zbozi z ON z.id = cr.zbozi_id
+            LEFT JOIN cart c ON c.user_id = ? AND c.partner_id = p.id
+            LEFT JOIN cart_zbozi cz ON cz.zbozi_id = cr.zbozi_id AND c.id = cz.cart_id
+            LEFT JOIN ceniky_akcni_radky car ON car.cenik_akcni_id = p.cenik_akcni_id 
+            AND car.zbozi_id = cz.zbozi_id AND car.prodejni_cena_bez_dph > 0
+            LEFT JOIN ceniky_akcni ca ON ca.id = p.cenik_akcni_id
+            LEFT JOIN kategorie_zbozi kz ON kz.zbozi_id = cr.zbozi_id 
+            LEFT JOIN kategorie k ON k.id = kz.kategorie_id
+            WHERE p.id = ? AND cr.zbozi_id = ?", $userID, $pID, $zboziID
+                );
+    }    
+
+    /**
+     * Zobrazí základní seznam zboží partnera dle kategorií pro jeho
+     * výběr/odebrání do/z oblíbených položek - to je pak řešeno ajaxem.
+     * U každého zboží vrací také kategorii.
+     * @param int $pID ID partnera
+     * @return Resultset
+     */
+    public function getPartnerZboziFav($pID)
+    {
+        return $this->database->query(
+            "SELECT cr.zbozi_id,z.nazev,z.zkratka,z.kod,z.ean,z.baleni,z.paleta,
+            z.jednotka,z.dph,z.hmotnost,z.objemova_jednotka,z.min_obj,
+            kz.kategorie_id, k.nazev AS kategorie_nazev,
+            IF (pz.zbozi_id IS NULL,'N','A') AS oblibene
+            FROM partner p
+            JOIN ceniky_radky cr ON cr.cenik_id = p.cenik_id AND cr.cena_bez_dph > 0
+            JOIN zbozi z ON z.id = cr.zbozi_id
+            LEFT JOIN partner_zbozi pz ON pz.partner_id = p.id AND pz.zbozi_id = cr.zbozi_id
+            LEFT JOIN kategorie_zbozi kz ON kz.zbozi_id = cr.zbozi_id 
+            LEFT JOIN kategorie k ON k.id = kz.kategorie_id
+            WHERE p.id = ? ORDER BY kategorie_id,poradi_id", $pID
+                );
+    }    
+
+    /**
+     * Pro AJAX - Vrátí konkrétní zboží partnera.
+     * U zboží vrací také kategorii.
+     * @param int $pID ID partnera
+     * @param int $zboziID
+     * @return Resultset
+     */
+    public function getPartnerZboziFavID($pID,$zboziID)
+    {
+        return $this->database->query(
+            "SELECT cr.zbozi_id,z.nazev,z.zkratka,z.kod,z.ean,z.baleni,z.paleta,
+            z.jednotka,z.dph,z.hmotnost,z.objemova_jednotka,z.min_obj,
+            kz.kategorie_id, k.nazev AS kategorie_nazev,
+            IF (pz.zbozi_id IS NULL,'N','A') AS oblibene
+            FROM partner p
+            JOIN ceniky_radky cr ON cr.cenik_id = p.cenik_id AND cr.cena_bez_dph > 0
+            JOIN zbozi z ON z.id = cr.zbozi_id
+            LEFT JOIN partner_zbozi pz ON pz.partner_id = p.id AND pz.zbozi_id = cr.zbozi_id
+            LEFT JOIN kategorie_zbozi kz ON kz.zbozi_id = cr.zbozi_id 
+            LEFT JOIN kategorie k ON k.id = kz.kategorie_id
+            WHERE p.id = ? AND cr.zbozi_id = ?", $pID, $zboziID
+                );
+    }    
+    
+    /**
+     * Vrátí oblíbené zboží partnera s aktuálními cenami a označením množství, 
+     * které je již v košíku konkrétního uživatele. Pokud něco v košíku již je, 
+     * ale není to v oblíbených, nezobrazí se.
+     * U každého zboží vrací také kategorii.
+     * @param int $userID ID uživatele
+     * @param int $pID ID partnera 
+     * @return Resultset
+     */ 
+    public function getUserPartnerZboziOblibene($userID, $pID)
+    {
+        return $this->database->query(                
+            "SELECT cr.zbozi_id,z.nazev,z.zkratka,z.kod,z.ean,z.baleni,z.paleta,
+            z.jednotka,z.dph,z.hmotnost,z.objemova_jednotka,z.min_obj,
+            cr.cena_bez_dph AS cena_zakladni_bez_dph,car.prodejni_cena_bez_dph AS cena_akcni_bez_dph,
+            DATE_ADD(ca.platnost_od, INTERVAL -3 DAY) AS akcni_od,ca.platnost_do AS akcni_do,
+            IF ((NOW() BETWEEN DATE_ADD(ca.platnost_od, INTERVAL -3 DAY) AND ca.platnost_do) 
+            AND (car.prodejni_cena_bez_dph IS NOT NULL), car.prodejni_cena_bez_dph, cr.cena_bez_dph) AS cena_zbozi_bez_dph,
+            c.id AS cart_id, cz.pocet, kz.kategorie_id, k.nazev AS kategorie_nazev
+            FROM partner p
+            JOIN ceniky_radky cr ON cr.cenik_id = p.cenik_id AND cr.cena_bez_dph > 0
+            JOIN zbozi z ON z.id = cr.zbozi_id
+            JOIN partner_zbozi pz ON pz.partner_id = p.id AND pz.zbozi_id = cr.zbozi_id
+            LEFT JOIN cart c ON c.user_id = ? AND c.partner_id = p.id
+            LEFT JOIN cart_zbozi cz ON cz.zbozi_id = cr.zbozi_id AND c.id = cz.cart_id
+            LEFT JOIN ceniky_akcni_radky car ON car.cenik_akcni_id = p.cenik_akcni_id 
+            AND car.zbozi_id = cz.zbozi_id AND car.prodejni_cena_bez_dph > 0
+            LEFT JOIN ceniky_akcni ca ON ca.id = p.cenik_akcni_id
+            LEFT JOIN kategorie_zbozi kz ON kz.zbozi_id = cr.zbozi_id 
+            LEFT JOIN kategorie k ON k.id = kz.kategorie_id
+            WHERE p.id = ? ORDER BY kategorie_id,poradi_id", $userID, $pID
+                );
+    }    
+
+    /**
+     * Vrátí číslo poslední objednávky partnera. 
+     * Vrací také jméno uživatele, který ji vytvořil.
+     * @param int $partnerid ID partnera
+     * @return type
+     */
+    public function getLastOrderID($partnerid) {        
+        return $this->database->query(
+            "SELECT obj.*, u.jmeno, u.kontakt FROM obj 
+            LEFT JOIN `user` u ON u.id = obj.user_id
+            WHERE partner_id = ?
+            ORDER BY datum DESC LIMIT 1",$partnerid
+                )->fetch();        
+    }
+    
+    /**
+     * Vrátí zboží z objednávky partnera - kontroluje, jestli má uživatel
+     * partnera povoleného a jestli je číslo objednávky správného partnera.
+     * U každého zboží vrací také kategorii.
+     * @param int $userID ID uživatele
+     * @param int $pID ID partnera 
+     * @param int $objID ID objednávky
+     * @return Resultset
+     */ 
+    public function getUserPartnerZboziObj($userID, $pID, $objID)
+    {
+        return $this->database->query(                
+            "SELECT oz.zbozi_id, oz.pocet, 
+            z.nazev,z.zkratka,z.kod,z.ean,z.baleni,z.paleta,z.jednotka,z.dph,
+            z.hmotnost,z.objemova_jednotka,z.min_obj,
+            kz.kategorie_id, k.nazev AS kategorie_nazev
+            FROM obj_zbozi oz
+            JOIN obj o ON o.id = oz.obj_id
+            JOIN zbozi z ON z.id = oz.zbozi_id
+            JOIN user_partner up ON up.user_id = ?
+              AND up.partner_id = o.partner_id
+            LEFT JOIN kategorie_zbozi kz ON kz.zbozi_id = oz.zbozi_id 
+            LEFT JOIN kategorie k ON k.id = kz.kategorie_id
+            WHERE o.partner_id = ? AND obj_id = ?
+            ORDER BY kategorie_id,poradi_id", $userID, $pID, $objID
+                );
     }    
     
     /**
@@ -220,11 +350,52 @@ class PartnerManager extends BaseManager
         $DT2 = $this->vratPrvniDenZavozu($DT);
         $arr = $this->najdiNejblizsiDatumTrasy($pID, $DT2);
         if (!$arr) {
-            $arr = ['trasaDate' => null, 'trasaID' => null];        
-        } 
+            $arr = ['trasaDate' => null, 'trasaID' => null, 
+                'zavozDate' => null, 'zavozInfo' => '' 
+                ];
+        } else {
+            // datum trasy byl nalezen, zkontroluju, jestli datum a trasa nahodou 
+            // neni v seznamu datumu, ktere se nahrazuji
+            $res = $this->database->query(
+                    "SELECT * FROM trasa_nahrady WHERE datum = ? AND trasa_id = ?", 
+                    $arr['trasaDate']->format('Y-m-d'),$arr['trasaID']
+                    )->fetch();
+            // pokud nebyla nalezen zaznam pro tuto trasu, zkusim jeste hledat 
+            // obecnou nahradu (trasa_id = NULL)
+            if (!$res) {
+                $res = $this->database->query(
+                        "SELECT * FROM trasa_nahrady WHERE datum = ? AND trasa_id IS NULL", 
+                        $arr['trasaDate']->format('Y-m-d')
+                        )->fetch();
+            }
+            // byl nalezena nahrada
+            if ($res) {
+                $arr['zavozDate'] = $res['datum_nahrada'];
+                $arr['zavozInfo'] = $res['poznamka'];
+            } else {
+                $arr['zavozDate'] = $arr['trasaDate'];
+                $arr['zavozInfo'] = '';
+            }            
+        }
         $arr['startDate'] = $DT;
         $arr['prvniDate'] = $DT2; 
+        
         return $arr;
     }
     
+    public function addFavItem($partnerid,$zboziid) {    
+        return $this->database->query(
+                "INSERT IGNORE INTO partner_zbozi (partner_id, zbozi_id) 
+                 SELECT ?,id FROM zbozi WHERE id = ?",
+                 $partnerid,$zboziid
+        )->getRowCount();
+    }
+
+    public function deleteFavItem($partnerid,$zboziid) {    
+        return $this->database->query(
+                "DELETE FROM partner_zbozi WHERE partner_id = ? AND zbozi_id = ?",
+                 $partnerid,$zboziid
+        )->getRowCount();
+    }
+           
 }

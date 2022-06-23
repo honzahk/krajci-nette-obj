@@ -90,7 +90,7 @@
                     <a n:href="Cart:default">Košík</a>                    
                 </li>
                 <li n:class="$presenter->isLinkCurrent('Partner:itemList') ? active">
-                    <a n:href="Partner:itemList">Zboží</a>                    
+                    <a n:href="Partner:itemList">Veškeré zboží</a>                    
                 </li>
             {/ifset}                                
         {/if}                        
@@ -121,8 +121,24 @@
                                 <h3><a n:href="Partner:show $partnerID">{$partnerAkt['nazev']}</a></h3>
                             </div>
                             <div class="panel-body" n:ifset="$zavoz" >
-                                {ifset $zavoz['trasaDate']}<h5>Datum závozu: {$zavoz['trasaDate']|date:'%d.%m.%Y'} (trasa č.{$zavoz['trasaID']})</h5>{/ifset}
+                                {*ifset $zavoz}<h5>Aktuální čas: {$zavoz['startDate']|date:'%d.%m.%Y %T'} -> první možný den závozu: {$zavoz['prvniDate']|date:'%d.%m.%Y'}</h5>{/ifset*}
+                                {*ifset $zavoz['trasaDate']}<h5>Datum nejbližší závozové trasy dle prvního možného data závozu: {$zavoz['trasaDate']|date:'%d.%m.%Y'} (trasa č.{$zavoz['trasaID']})</h5>{/ifset*}
+                                {ifset $zavoz['zavozDate']}
+                                    <h5>Datum závozu: {$zavoz['zavozDate']|date:'%d.%m.%Y'} (trasa č.{$zavoz['trasaID']})</h5>
+                                    <h4 n:ifcontent>{$zavoz['zavozInfo']}</h4>
+                                {/ifset}
                             </div>    
+                            {*
+                            <div class="panel-body">
+                                <table class="table table-striped">
+                                  <tr><td><a n:href="Partner:show $partnerID">{$partnerAkt['nazev']}</a></td></tr>
+                                  {if $partnerAkt[nazev2]}
+                                  <tr><td>{$partnerAkt[nazev2]}</td></tr>
+                                  {/if}
+                                  <tr><td>{$partnerAkt[mesto]}</td></tr>
+                                </table>
+                            </div>    
+                            *}
                         </div>
                     </div>
                 </div>

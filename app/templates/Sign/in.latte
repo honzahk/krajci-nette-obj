@@ -1,4 +1,35 @@
 {block content}
 <h1 n:block=title>Přihlášení do portálu</h1>
 
+{*
+<p>Ručně vykreslený formulář</p>
+
+<form n:name=signInForm class="w3-container w3-card-4 w3-light-grey w3-padding-16">
+{dump $form}
+{if $form->hasErrors()}
+    <div class="w3-panel w3-orange w3-padding">
+        <ul>
+                <li n:foreach="$form->errors as $error">{$error}</li>
+        </ul>
+    </div>
+    {/if}
+    <p>{label username /}<input n:name=username class="w3-input">
+       <span class="w3-small" n:ifcontent>{$form['username']->options['description']}</span>
+       <span class="w3-text-red w3-small" n:ifcontent>{inputError username}</span>
+    </p>
+    <p>{label password /}<input n:name=password class="w3-input">
+    </p>
+    <p><input n:name=remember class="w3-check">   {label remember: /}</p>
+    <input n:name=send class="w3-btn w3-teal">
+</form>
+
+*}
 {control signInForm}
+
+{* OR
+{import '../components/form.latte'}
+{include form signInForm}
+
+
+<p><a n:href="up">Don't have an account yet? Sign up.</a></p>
+*}

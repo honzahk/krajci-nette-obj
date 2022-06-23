@@ -2,6 +2,9 @@
     <div class="panel panel-info">
         <div class="panel-heading">
             <h3 n:block=title>{$item->nazev}</h3>
+            {* foreach $zavoz as $r -- debugging}
+                <h6>{$r['datum']} - {$r['mask']}</h6>
+            {/foreach *}
         </div>
         {snippet itemsContainer}
         <div class="panel-body">
@@ -41,9 +44,15 @@
                     <div class="col-xs-12 col-md-6">
                         <div class="form-inline">
                             {label pocet_bal /}<input n:name=pocet_bal class="input-number">
-                            <label n:if="$item->baleni<>$item->min_obj" class="form-check-label pulka-checkbox" for="frm-itemEditorForm-pulka">
-                                <input n:name=pulka>+ půl balení
-                            </label>
+                        {* <div class="checkbox" n:if="$item->baleni<>$item->min_obj"><label><input type="checkbox" value="">+ půl balení</label></div>*}
+                        {* <div n:if="$item->baleni<>$item->min_obj"><input type="checkbox" value="">+ půl balení</div> *}
+                        {*    <span n:if="$item->baleni<>$item->min_obj">
+                                {label pulka}<input n:name=pulka>{/label}
+                            </span>
+                          *}
+                          <label n:if="$item->baleni<>$item->min_obj" class="form-check-label pulka-checkbox" for="frm-itemEditorForm-pulka">
+                              <input n:name=pulka>+ půl balení
+                          </label>
                         </div>
                     </div>
                     <div class="col-xs-6 col-md-4"><input n:name=send class="btn btn-primary button" value="Uložit"></div>

@@ -8,6 +8,11 @@
     text-align: right;
 }
 
+.big-checkbox {
+   width: 30px!important; 
+   height: 30px!important; 
+}
+
 /* @media (max-width: 768px) { */
 @media (max-width: 992px) {
     .baleni {

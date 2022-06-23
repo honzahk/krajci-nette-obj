@@ -1,0 +1,45 @@
+{block content}
+    <div class="container-fluid">
+        <div class="list-group">
+            <div class="row">
+                {*<a n:href="addFavItemsFromLastOrder" class="list-group-item col-xs-12 col-md-4 list-group-item-warning">Přidat oblíbené položky z poslední objednávky</a>*}
+                <a n:href="lastOrder" class="list-group-item col-xs-12 col-md-4 list-group-item-success">Zobrazit poslední objednávku</a>               
+                <a n:href="itemListFavEdit" class="list-group-item col-xs-12 col-md-4 list-group-item-warning">Upravit oblíbené položky</a>
+                <a n:href="itemList" class="list-group-item col-xs-12 col-md-4 list-group-item-info">Zobrazit všechny položky</a>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-warning">
+        <div class="panel-heading">
+            <h3 n:block=title>Oblíbené položky</h3>
+            {* foreach $zavoz as $r -- debugging}
+                <h6>{$r['datum']} - {$r['mask']}</h6>
+            {/foreach *}            
+        </div>
+        <div class="panel-body">
+            <div class="container-fluid">
+                <div class="row">          
+                    <div class="col-xs-12 col-md-4">Název</div>
+                    <div class="col-xs-3 col-md-2 baleni">Počet v balení</div>
+                    <div class="col-xs-3 col-md-2 baleni">Cena za ks</div>
+                    <div class="col-xs-3 col-md-2 baleni">Počet v košíku</div>
+                    <div class="col-xs-3 col-md-2 baleni">Balení v košíku</div>                            
+                </div>
+    {foreach $items as $r}
+                <div class="row bg-warning"> 
+                    <div class="col-xs-12 col-md-4"><a n:href="Partner:itemCalc $r->zbozi_id">{$r->nazev}</a></div>                            
+                    <div class="col-xs-3 col-md-2 baleni">{$r->baleni}</div>
+                    <div class="col-xs-3 col-md-2 baleni">{$r->cena_zbozi_bez_dph|number:2, ',', ' '}</div>
+                    <div class="col-xs-3 col-md-2 baleni">{if $r->pocet > 0}{$r->pocet}{else}&nbsp;{/if}</div>
+                    <div class="col-xs-3 col-md-2 baleni">{if $r->pocet > 0}{= intdiv($r->pocet,$r->baleni)} {if fmod($r->pocet,$r->baleni)>0}({= fmod($r->pocet,$r->baleni)}){/if}{else}&nbsp;{/if}</div>
+                </div>
+    {/foreach}
+            </div>
+        </div>    
+    </div>        
+    <div class="panel panel-info">
+        <div class="btn-group btn-group-justified">
+            <a n:href="Cart:default" class="btn btn-primary">Přejít k objednání</a>
+        </div>
+    </div>        
+{/block}

@@ -74,7 +74,7 @@ abstract class BaseManager
      * @param type $date DateTime
      * @return DateTime
      */
-    public function vratPrvniDenZavozu(DateTime $date) 
+    public function vratPrvniDenZavozu9hodin(DateTime $date) 
     {
         $resD = clone $date;
 
@@ -101,8 +101,45 @@ abstract class BaseManager
 
         // samotny posledni pocitany den mne nezajima, jestli je ci neni statni svatek,
         // proste vratim posledni pracovni den pred timto dnem zavozu, k nemuz prictu 
-        // jeden dalsi den - vyhodnoceni, jestli to je ci neni statni svatek necham
-        // zase na jinem procesu
+        // jeden dalsi den - vyhodnoceni, jestli to je ci neni statni svatek, pripadne
+        // posun dle jinych pravidel, necham zase na jinem procesu
+        while ($wdays) {
+            $resD->modify('+1 day');
+            if (!in_array($resD->format('N'), $workingDays)) { 
+                continue;               
+            }
+            if ((in_array($resD->format('*-m-d'), $holidayDays)) || $this->isDateEasterFridayOrMonday($resD)) { 
+                continue;             
+            }
+            //echo "   pracovni den, ponizuji wdays...";
+            $wdays--;
+        }    
+        $resD->modify('+1 day');            
+        return $resD;    
+    }
+    
+    /**
+     * Funkce od aktualniho data a casu vybere prvni mozny den zavozu - bez ohledu
+     * na to, jestli je tento den pracovni ci svatek (vikend, statni svatek).
+     * Posun vzdy o dva cele pracovni dny.
+     * @param type $date DateTime
+     * @return DateTime
+     */
+    public function vratPrvniDenZavozu(DateTime $date) 
+    {
+        $resD = clone $date;
+
+        $workingDays = [1, 2, 3, 4, 5]; # date format = N (1 = Monday, ...)
+        $holidayDays = ['*-01-01','*-05-01','*-05-08','*-07-05','*-07-06','*-09-28','*-10-28','*-11-17','*-12-24','*-12-25','*-12-26'];
+
+        // posunujeme o dva pracovni dny
+        $wdays = 2;
+        //echo "wdays: ".$wdays."<br>";
+
+        // samotny posledni pocitany den mne nezajima, jestli je ci neni statni svatek,
+        // proste vratim posledni pracovni den pred timto dnem zavozu, k nemuz prictu 
+        // jeden dalsi den - vyhodnoceni, jestli to je ci neni statni svatek, pripadne
+        // posun dle jinych pravidel, necham zase na jinem procesu
         while ($wdays) {
             $resD->modify('+1 day');
             if (!in_array($resD->format('N'), $workingDays)) { 

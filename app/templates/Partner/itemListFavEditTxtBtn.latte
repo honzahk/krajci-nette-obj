@@ -1,0 +1,47 @@
+{block content}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 n:block=title>Úprava oblíbených položek</h3>
+        </div>
+    </div>
+
+    {snippet itemsContainer}
+    {var $katColor = ['info','danger','success','warning']}
+    {foreach $items as $r}
+    <div class="panel panel-{$katColor[$r->kategorie_id-1]}">
+        <div class="panel-heading">
+            <h3>{$r->kategorie_nazev}</h3>
+        </div>
+        <div class="panel-body">
+            <div class="container-fluid">
+                <div class="row">          
+                    <div class="col-xs-12 col-md-8">Název</div>
+                    <div class="col-xs-6 col-md-2">Vybráno</div>
+                    <div class="col-xs-6 col-md-2">Akce</div>
+                </div>
+            {iterateWhile}
+                <div class="row bg-{$katColor[$r->kategorie_id-1]}" n:snippet="item-$r->zbozi_id"> 
+                    <div class="col-xs-12 col-md-8">{$r->nazev}</div>                    
+                    <div class="col-xs-6 col-md-2" n:snippet="item-vybrano-$r->zbozi_id">
+                        {if $r->oblibene == 'A'}Ano{else}&nbsp;{/if}
+                    </div>
+                    <div class="col-xs-6 col-md-2" n:snippet="item-btn-$r->zbozi_id">
+                        {if $r->oblibene == 'A'}
+                            <a n:href="updateFav! $r->zbozi_id,del" class="ajax btn btn-info">Odebrat</a>
+                        {else}
+                            <a n:href="updateFav! $r->zbozi_id,add" class="ajax btn btn-info">Vybrat</a>                            
+                        {/if}
+                    </div>
+                </div>
+            {/iterateWhile $r->kategorie_id === $iterator->nextValue->kategorie_id}
+            </div>
+        </div>    
+    </div>    
+        {/foreach}
+        {/snippet}
+    <div class="panel panel-info">
+        <div class="btn-group btn-group-justified">
+            <a n:href="itemListFav" class="btn btn-primary">Hotovo</a>
+        </div>
+    </div>        
+{/block}

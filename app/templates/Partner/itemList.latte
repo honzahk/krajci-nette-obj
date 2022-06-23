@@ -1,7 +1,19 @@
 {block content}
+    <div class="container-fluid">
+        <div class="list-group">
+            <div class="row">          
+                {*<a n:href="addItemsFromLastOrder" class="list-group-item col-xs-12 col-md-6 list-group-item-info">Přidat položky z poslední objednávky</a>*}
+                <a n:href="lastOrder" class="list-group-item col-xs-12 col-md-6 list-group-item-success">Zobrazit poslední objednávku</a>               
+                <a n:href="itemListFav" class="list-group-item col-xs-12 col-md-6 list-group-item-warning">Zobrazit jen oblíbené položky</a>
+            </div>
+        </div>
+    </div>
     <div class="panel panel-info">
         <div class="panel-heading">
             <h3 n:block=title>Zboží k objednání</h3>
+            {* foreach $zavoz as $r -- debugging}
+                <h6>{$r['datum']} - {$r['mask']}</h6>
+            {/foreach *}            
         </div>
     </div>
 

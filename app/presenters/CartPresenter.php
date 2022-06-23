@@ -118,9 +118,9 @@ class CartPresenter extends BasePresenter
             if ($zavoz) {
                 $this->template->zavoz = $zavoz;
                 if ($sessZavoz) {
-                    if ($sessZavoz['trasaDate'] && $zavoz['trasaDate'] &&
-                            ($sessZavoz['trasaDate']->format('Y-m-d') != 
-                             $zavoz['trasaDate']->format('Y-m-d'))) {
+                    if ($sessZavoz['zavozDate'] && $zavoz['zavozDate'] &&
+                            ($sessZavoz['zavozDate']->format('Y-m-d') != 
+                             $zavoz['zavozDate']->format('Y-m-d'))) {
                         $sessionSection['zavoz'] = $zavoz;
                         $this->flashMessage('Pozor - došlo ke změně možného data závozu! Pokud chcete objednávku i přesto odeslat, odešlete ji znovu...','w3-red');
                         $form->addError('Pozor - došlo ke změně možného data závozu! Pokud chcete objednávku i přesto odeslat, odešlete ji znovu...');
@@ -135,7 +135,7 @@ class CartPresenter extends BasePresenter
             $sessionSection->remove('zavoz');
             
             // vime, ze v kosiku neco je, muzeme tedy preklopit do OBJ            
-            $obj_id = $this->cartManager->makeOrder($cartID,$values["zprava"],$zavoz['trasaDate']);
+            $obj_id = $this->cartManager->makeOrder($cartID,$values["zprava"],$zavoz['zavozDate']);
             if (!$obj_id) {
                 $this->flashMessage('Při vytváření objednávky došlo k chybě!!!','w3-red');
                 $this->redirect('default');
@@ -151,4 +151,17 @@ class CartPresenter extends BasePresenter
         }
     }
     
+    public function actionEmptyCart()
+    {
+        if ($this->partnerID) {
+            $cartID = $this->cartManager->getCartIDByUP(
+                    $this->getUser()->getId(),$this->partnerID
+            );
+            if ($cartID) {
+                $cart = $this->cartManager->removeCartItems($cartID);
+            }
+        }
+        $this->redirect('default');
+    }
+        
 }

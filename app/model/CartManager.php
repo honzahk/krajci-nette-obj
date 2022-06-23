@@ -156,8 +156,7 @@ class CartManager extends BaseManager
 
     public function setItem($userid,$partnerid,$zbozid,$pocet) {
     
-        $cid = $this->getCartIDByUP($userid,$partnerid);
-        
+        $cid = $this->getCartIDByUP($userid,$partnerid);        
         if (!$cid) {
             return false;
         }        
@@ -170,4 +169,49 @@ class CartManager extends BaseManager
         return true;
     }
 
+    public function addItemsFromOrder($userid,$partnerid,$objid) {
+    
+        $cid = $this->getCartIDByUP($userid,$partnerid);        
+        if (!$cid) {
+            return false;
+        }   
+        
+        return $this->database->query(
+                "INSERT INTO cart_zbozi (cart_id,zbozi_id,pocet) 
+                 SELECT * FROM (
+                   SELECT ?,zbozi_id,pocet AS n_pocet 
+                   FROM obj_zbozi oz WHERE obj_id = ?
+                 ) AS dt
+                 ON DUPLICATE KEY UPDATE pocet = pocet + dt.n_pocet",
+                 $cid,$objid
+        )->getRowCount();
+        
+        // POZOR - insert or update, pokud položky již jsou v tabulce, mi vrací 
+        // špatné číslo - každý update, kde položka již je vložena, se počítá 2x
+        // Proto číslo getRowCount() není příliš použitelné...
+    }
+    
+    public function addFavItemsFromOrder($userid,$partnerid,$objid) {
+    
+        $cid = $this->getCartIDByUP($userid,$partnerid);        
+        if (!$cid) {
+            return false;
+        }   
+        
+        return $this->database->query(
+                "INSERT INTO cart_zbozi (cart_id,zbozi_id,pocet) 
+                 SELECT * FROM (
+                   SELECT ?,oz.zbozi_id,pocet AS n_pocet 
+                   FROM obj_zbozi oz, partner_zbozi pz 
+                   WHERE obj_id = ? AND pz.partner_id = ? AND oz.zbozi_id = pz.zbozi_id
+                 ) AS dt
+                 ON DUPLICATE KEY UPDATE pocet = pocet + dt.n_pocet",
+                 $cid,$objid,$partnerid
+        )->getRowCount();
+        //return true;
+        // POZOR - insert or update, pokud položky již jsou v tabulce, mi vrací 
+        // špatné číslo - každý update, kde položka již je vložena, se počítá 2x
+        // Proto číslo getRowCount() není příliš použitelné...
+    }
+        
 }

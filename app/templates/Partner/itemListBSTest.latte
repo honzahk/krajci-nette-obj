@@ -1,0 +1,308 @@
+{block content}
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <h3 n:block=title>Zboží k objednání</h3>
+            {* foreach $zavoz as $r -- debugging}
+                <h6>{$r['datum']} - {$r['mask']}</h6>
+            {/foreach *}
+        </div>
+    </div>
+        
+        <p><a href="https://www.itnetwork.cz/html-css/bootstrap/kurz/bootstrap-collapse-a-accordion">Bootstrap - collapse a accordion na ITNetwork</a></p>
+<p>Ukázka collapse.</p>
+<p>
+    <a class="btn btn-primary" data-toggle="collapse" href="#ukazka-collapse" aria-expanded="false" aria-controls="ukazka-collapse">
+        Více informací
+    </a>
+    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#ukazka-collapse" aria-expanded="false" aria-controls="ukazka-collapse">
+        Více informací
+    </button>
+</p>
+<div class="collapse" id="ukazka-collapse">
+    <div class="card card-body">
+        Poštovné zahrnuje dopravu Českou poštou, balné a službu upozornění naší operátorky na déle nevyzvednutou zásilku.
+    </div>
+</div>
+
+<p>
+    <a class="btn btn-primary" data-toggle="collapse" href="#ukazka-collapse-2" aria-expanded="false" aria-controls="ukazka-collapse-2">
+        Více informací
+    </a>
+</p>
+<div class="collapse" id="ukazka-collapse-2">
+    <div class="card card-body">
+        Poštovné zahrnuje dopravu Českou poštou, balné a službu upozornění naší operátorky na déle nevyzvednutou zásilku.
+    </div>
+</div>
+
+<div class="panel panel-success">
+    <div class="panel-heading">
+        <h3><a data-toggle="collapse" href="#ukazka-collapse-3" aria-expanded="false" aria-controls="ukazka-collapse-3">
+                Kategorie rozbalovací</a></h3>
+    </div>
+    <div class="panel-body collapse" id="ukazka-collapse-3">
+        <div class="container-fluid">
+            <div class="row">          
+                <div class="col-xs-12 col-md-4">Název</div>
+                <div class="col-xs-3 col-md-2 baleni">Počet v balení</div>
+                <div class="col-xs-3 col-md-2 baleni">Cena za ks</div>
+                <div class="col-xs-3 col-md-2 baleni">Počet v košíku</div>
+                <div class="col-xs-3 col-md-2 baleni">Balení v košíku</div>                            
+            </div>
+            <div class="row bg-info"> 
+                <div class="col-xs-12 col-md-4">název zboží</div>
+                <div class="col-xs-3 col-md-2 baleni">20</div>
+                <div class="col-xs-3 col-md-2 baleni">{13.5|number:2, ',', ' '}</div>
+                <div class="col-xs-3 col-md-2 baleni">30</div>
+                <div class="col-xs-3 col-md-2 baleni">1 (10)</div>
+            </div>
+        </div>
+    </div>    
+</div>    
+
+                
+                
+                
+<div class="container-fluid">
+    <div class="list-group">
+        <div class="row">          
+            <a class="list-group-item col-xs-6 col-md-3 list-group-item-danger" data-parent="#accordion" data-toggle="collapse" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">Brambůrky</a>
+            <a class="list-group-item col-xs-6 col-md-3 list-group-item-info" data-parent="#accordion" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Snacky</a>
+            <a class="list-group-item col-xs-6 col-md-3 list-group-item-success" data-parent="#accordion" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">Tyčinky</a>
+            <a class="list-group-item col-xs-6 col-md-3 list-group-item-warning" data-parent="#accordion" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">Suché plody</a>
+        </div>    
+    </div>    
+</div>        
+                
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  <div class="panel panel-danger">
+    <div class="panel-heading" role="tab" id="headingOne">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Brambůrky
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+      <div class="panel-body">
+        <div class="container-fluid">
+            <div class="row">          
+                <div class="col-xs-12 col-md-4">Název</div>
+                <div class="col-xs-3 col-md-2 baleni">Počet v balení</div>
+                <div class="col-xs-3 col-md-2 baleni">Cena za ks</div>
+                <div class="col-xs-3 col-md-2 baleni">Počet v košíku</div>
+                <div class="col-xs-3 col-md-2 baleni">Balení v košíku</div>                            
+            </div>
+            <div class="row bg-info"> 
+                <div class="col-xs-12 col-md-4">Cyril sůl</div>
+                <div class="col-xs-3 col-md-2 baleni">20</div>
+                <div class="col-xs-3 col-md-2 baleni">{13.5|number:2, ',', ' '}</div>
+                <div class="col-xs-3 col-md-2 baleni">30</div>
+                <div class="col-xs-3 col-md-2 baleni">1 (10)</div>
+            </div>
+        </div>        
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading" role="tab" id="headingTwo">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          Snacky
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+      <div class="panel-body">
+        <div class="container-fluid">
+            <div class="row">          
+                <div class="col-xs-12 col-md-4">Název</div>
+                <div class="col-xs-3 col-md-2 baleni">Počet v balení</div>
+                <div class="col-xs-3 col-md-2 baleni">Cena za ks</div>
+                <div class="col-xs-3 col-md-2 baleni">Počet v košíku</div>
+                <div class="col-xs-3 col-md-2 baleni">Balení v košíku</div>                            
+            </div>
+            <div class="row bg-info"> 
+                <div class="col-xs-12 col-md-4">Cibulové kroužky 45g</div>
+                <div class="col-xs-3 col-md-2 baleni">20</div>
+                <div class="col-xs-3 col-md-2 baleni">{13.5|number:2, ',', ' '}</div>
+                <div class="col-xs-3 col-md-2 baleni">30</div>
+                <div class="col-xs-3 col-md-2 baleni">1 (10)</div>
+            </div>
+            <div class="row bg-info"> 
+                <div class="col-xs-12 col-md-4">Slaninové hranolky 50g</div>
+                <div class="col-xs-3 col-md-2 baleni">20</div>
+                <div class="col-xs-3 col-md-2 baleni">{13.5|number:2, ',', ' '}</div>
+                <div class="col-xs-3 col-md-2 baleni">30</div>
+                <div class="col-xs-3 col-md-2 baleni">1 (10)</div>
+            </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-success">
+    <div class="panel-heading" role="tab" id="headingThree">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          Tyčinky
+        </a>
+      </h4>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+      <div class="panel-body">
+        <div class="container-fluid">
+            <div class="row">          
+                <div class="col-xs-12 col-md-4">Název</div>
+                <div class="col-xs-3 col-md-2 baleni">Počet v balení</div>
+                <div class="col-xs-3 col-md-2 baleni">Cena za ks</div>
+                <div class="col-xs-3 col-md-2 baleni">Počet v košíku</div>
+                <div class="col-xs-3 col-md-2 baleni">Balení v košíku</div>                            
+            </div>
+            <div class="row bg-info"> 
+                <div class="col-xs-12 col-md-4">Pekařské tyčinky solené 90g</div>
+                <div class="col-xs-3 col-md-2 baleni">20</div>
+                <div class="col-xs-3 col-md-2 baleni">{13.5|number:2, ',', ' '}</div>
+                <div class="col-xs-3 col-md-2 baleni">30</div>
+                <div class="col-xs-3 col-md-2 baleni">1 (10)</div>
+            </div>
+            <div class="row bg-info"> 
+                <div class="col-xs-12 col-md-4">Mini tyčinky od Cyrila solené 90g</div>
+                <div class="col-xs-3 col-md-2 baleni">20</div>
+                <div class="col-xs-3 col-md-2 baleni">{13.5|number:2, ',', ' '}</div>
+                <div class="col-xs-3 col-md-2 baleni">30</div>
+                <div class="col-xs-3 col-md-2 baleni">1 (10)</div>
+            </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-warning">
+    <div class="panel-heading" role="tab" id="headingFour">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+          Suché plody
+        </a>
+      </h4>
+    </div>
+    <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+      <div class="panel-body">
+        <div class="container-fluid">
+            <div class="row">          
+                <div class="col-xs-12 col-md-4">Název</div>
+                <div class="col-xs-3 col-md-2 baleni">Počet v balení</div>
+                <div class="col-xs-3 col-md-2 baleni">Cena za ks</div>
+                <div class="col-xs-3 col-md-2 baleni">Počet v košíku</div>
+                <div class="col-xs-3 col-md-2 baleni">Balení v košíku</div>                            
+            </div>
+            <div class="row bg-info"> 
+                <div class="col-xs-12 col-md-4">Arašídy</div>
+                <div class="col-xs-3 col-md-2 baleni">20</div>
+                <div class="col-xs-3 col-md-2 baleni">{13.5|number:2, ',', ' '}</div>
+                <div class="col-xs-3 col-md-2 baleni">30</div>
+                <div class="col-xs-3 col-md-2 baleni">1 (10)</div>
+            </div>
+            <div class="row bg-info"> 
+                <div class="col-xs-12 col-md-4">Mandle</div>
+                <div class="col-xs-3 col-md-2 baleni">20</div>
+                <div class="col-xs-3 col-md-2 baleni">{13.5|number:2, ',', ' '}</div>
+                <div class="col-xs-3 col-md-2 baleni">30</div>
+                <div class="col-xs-3 col-md-2 baleni">1 (10)</div>
+            </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>         
+                
+                
+{*
+<h1>Ukázka accordion zákon</h1>
+<div id="harmonika" role="tablist">
+    <div class="card">
+        <div class="card-header" role="tab" id="hlavicka-1">
+            <h5 class="mb-0">
+                <a data-toggle="collapse" href="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
+                    Část první - Všeobecná ustanovení
+                </a>
+            </h5>
+        </div>
+        <div id="collapse-1" class="collapse show" role="tabpanel" aria-labelledby="hlavicka-1" data-parent="#harmonika">
+            <div class="card-body">
+                Tento zákon upravuje podmínky živnostenského podnikání (dále jen "živnost") a kontrolu nad jejich dodržováním. Živností je soustavná činnost provozovaná samostatně, vlastním jménem, na vlastní odpovědnost, za účelem dosažení zisku a za podmínek stanovených tímto zákonem.
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" role="tab" id="hlavicka-2">
+            <h5 class="mb-0">
+                <a class="collapsed" data-toggle="collapse" href="#collapse-2" aria-expanded="false" aria-controls="collapseTwo">
+                    Část druhá - Druhy živností
+                </a>
+            </h5>
+        </div>
+        <div id="collapse-2" class="collapse" role="tabpanel" aria-labelledby="hlavicka-2" data-parent="#harmonika">
+            <div class="card-body">
+                Ohlašovacími živnostmi jsou
+                <ul>
+                    <li>živnosti řemeslné, je-li podmínkou provozování živnosti odborná způsobilost uvedená v § 21 a 22,
+                    <li>živnosti vázané, je-li podmínkou provozování živnosti odborná způsobilost uvedená v příloze č. 2 k tomuto zákonu, není-li dále stanoveno jinak,
+                    <li>živnost volná, u které není jako podmínka provozování živnosti odborná způsobilost stanovena.
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" role="tab" id="hlavicka-3">
+            <h5 class="mb-0">
+                <a class="collapsed" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
+                    Část třetí - Rozsah živnostenského oprávnění
+                </a>
+            </h5>
+        </div>
+        <div id="collapse-3" class="collapse" role="tabpanel" aria-labelledby="hlavicka-3" data-parent="#harmonika">
+            <div class="card-body">
+                Rozsah živnostenského oprávnění (dále jen „rozsah oprávnění“) se posuzuje podle předmětu podnikání uvedeného ve výpisu s přihlédnutím k ustanovením této části. Živnostenské oprávnění k výkonu živnosti volné opravňuje k výkonu činností uvedených v příloze č. 4 k tomuto zákonu.
+            </div>
+        </div>
+    </div>
+</div>
+*}
+
+    {snippet itemsContainer}
+    {foreach $items as $r}
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            <h3>{$r->kategorie_nazev}</h3>
+        </div>
+        <div class="panel-body">
+            <div class="container-fluid">
+                <div class="row">          
+                    <div class="col-xs-12 col-md-4">Název</div>
+                    <div class="col-xs-3 col-md-2 baleni">Počet v balení</div>
+                    <div class="col-xs-3 col-md-2 baleni">Cena za ks</div>
+                    <div class="col-xs-3 col-md-2 baleni">Počet v košíku</div>
+                    <div class="col-xs-3 col-md-2 baleni">Balení v košíku</div>                            
+                </div>
+            {iterateWhile}
+                <div class="row bg-info"> 
+                    <div class="col-xs-12 col-md-4">{$r->nazev}</div>
+                    <div class="col-xs-3 col-md-2 baleni">{$r->baleni}</div>
+                    <div class="col-xs-3 col-md-2 baleni">{$r->cena_zbozi_bez_dph|number:2, ',', ' '}</div>
+                    <div class="col-xs-3 col-md-2 baleni" n:snippet="item-$r->zbozi_id">{if $r->pocet > 0}{$r->pocet}{else}&nbsp;{/if}</div>
+                    <div class="col-xs-3 col-md-2 baleni" n:snippet="item-$r->zbozi_id-bal">{if $r->pocet > 0}{= intdiv($r->pocet,$r->baleni)} {if fmod($r->pocet,$r->baleni)>0}({= fmod($r->pocet,$r->baleni)}){/if}{else}&nbsp;{/if}</div>
+                </div>
+            {/iterateWhile $r->kategorie_id === $iterator->nextValue->kategorie_id}
+            </div>
+        </div>    
+    </div>    
+        {/foreach}
+        {/snippet}
+    <div class="panel panel-info">
+        <div class="btn-group btn-group-justified">
+            <a n:href="Cart:default" class="btn btn-primary">Přejít k objednání</a>
+        </div>
+    </div>        
+{/block}

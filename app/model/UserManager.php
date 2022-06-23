@@ -62,7 +62,7 @@ class UserManager extends BaseManager implements Nette\Security\Authenticator, N
     
     /**
      * Přihlásí uživatele do systému.
-     * @param string $username, string $password jméno a heslo uživatele
+     * @param string $username, string $password jméno (případně email) a heslo uživatele
      * @return SimpleIdentity identitu přihlášeného uživatele pro další manipulaci
      * @throws AuthenticationException Jestliže došlo k chybě při prihlašování, např. špatné heslo nebo uživatelské
      *                                 jméno.
@@ -74,14 +74,19 @@ class UserManager extends BaseManager implements Nette\Security\Authenticator, N
         //list($username, $password) = $credentials; // Extrahuje potřebné parametry.
 
         // Vykoná dotaz nad databází a vrátí první řádek výsledku nebo false, pokud uživatel neexistuje.
+            // pokud je na vstupu email, polozim dotaz na nej
+            //if (Validators::isEmail($username)) {
+            //    $row = $this->database->table(self::TABLE_NAME)
+            //            ->where(self::COLUMN_EMAIL.'=? AND '.self::COLUMN_AKTIVNI.'=\'A\'', $username)
+            //            ->fetch();                
+            //} else {
         $row = $this->database->table(self::TABLE_NAME)
-                ->where(self::COLUMN_LOGIN.'=? AND '.self::COLUMN_AKTIVNI.'=\'A\'', $username)
-                ->fetch();
-
+                ->where('('.self::COLUMN_LOGIN.'=? OR '.self::COLUMN_EMAIL.'=?) AND '.self::COLUMN_AKTIVNI.'=\'A\'', $username,$username)
+                ->fetch();                                    
         // Ověření uživatele.
         if (!$row) {
             // Vyhodí výjimku, pokud uživatel neexistuje.
-            throw new Nette\Security\AuthenticationException('The username is incorrect.', self::IDENTITY_NOT_FOUND);
+            throw new Nette\Security\AuthenticationException('The username or email is incorrect.', self::IDENTITY_NOT_FOUND);
         } 
         //elseif (!Passwords::verify($password, $row[self::COLUMN_PASSWORD_HASH])) {
         elseif (!$this->passwords->verify($password, $row[self::COLUMN_PASSWORD_HASH])) {            
@@ -117,8 +122,9 @@ class UserManager extends BaseManager implements Nette\Security\Authenticator, N
     public function wakeupIdentity(IIdentity $identity): ?IIdentity
     {
         // aktualizace rolí v identitě
-        $username = $identity->getId();
-        
+        //$username = $identity->getId();
+        $userID = $identity->getId();
+                
         // Vykoná dotaz nad databází a vrátí první řádek výsledku nebo false, 
         // pokud uživatel neexistuje, případně pokud byl zakázán
         
@@ -137,7 +143,7 @@ class UserManager extends BaseManager implements Nette\Security\Authenticator, N
         }    
          */    
         $row = $this->database->table(self::TABLE_NAME)
-                ->where(self::COLUMN_ID.'=?', $username)
+                ->where(self::COLUMN_ID.'=?', $userID)
                 ->fetch();
 
         // Ověření uživatele.
@@ -183,7 +189,7 @@ class UserManager extends BaseManager implements Nette\Security\Authenticator, N
     
     /**
      * Adds new user with default role - for command line use (bin)
-     * @param string $username uživatelské jméno
+     * @param string $username uživatelské jméno (login)
      * @param string $email email uživatele
      * @param string $password heslo
      * @return void
@@ -193,6 +199,9 @@ class UserManager extends BaseManager implements Nette\Security\Authenticator, N
      */    
     public function add($username, $email, $password)
     {
+        if (!Validators::is($username,'pattern:^[a-zA-Z0-9_]+$')){
+            throw new \InvalidArgumentException('Login is not valid.');
+        }
         if (!Validators::isEmail($email)){
             throw new \InvalidArgumentException('Email address is not valid.');
         }
@@ -245,7 +254,7 @@ class UserManager extends BaseManager implements Nette\Security\Authenticator, N
     }
 
     /**
-     * Vrátí uživatele z databáze podle jeho ID.
+     * Vrátí uživatele z databáze podle jeho loginu.
      * @param string $username login uživatele
      * @return bool|mixed|IRow uživatel se zadaným loginem nebo false při neúspěchu
      */
@@ -255,7 +264,7 @@ class UserManager extends BaseManager implements Nette\Security\Authenticator, N
     }
 
     /**
-     * Vrátí uživatele z databáze podle jeho ID.
+     * Vrátí uživatele z databáze podle jeho emailu.
      * @param string $email email uživatele
      * @return bool|mixed|IRow uživatel se zadaným emailem nebo false při neúspěchu
      */

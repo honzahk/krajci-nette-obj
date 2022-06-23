@@ -86,6 +86,7 @@ class UserPresenter extends BasePresenter
 
         $form->addText('login', 'Login:')
              ->setRequired('Zadejte prosím login.')
+             ->addRule($form::PATTERN, "Povolené znaky jsou: a-z, A-Z, 0-9 a _(podtržítko)", "^[a-zA-Z0-9_]+$")
              ->addRule($form::MAX_LENGTH, NULL, 100);
 
         $form->addEmail('email', 'E-mail:')

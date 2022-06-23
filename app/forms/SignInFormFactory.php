@@ -32,8 +32,8 @@ class SignInFormFactory
 		$form = $this->factory->create();
                 $this->factory->makeBootstrapCervenan($form);
 
-                $form->addText('username', 'Uživatelské jméno:')
-			->setRequired('Zadejte prosím uživatelské jméno.');
+                $form->addText('username', 'Uživatelské jméno nebo email:')
+			->setRequired('Zadejte prosím uživatelské jméno nebo email.');
 
 		$form->addPassword('password', 'Heslo:')
 			->setRequired('Zadejte prosím heslo.');
@@ -47,9 +47,9 @@ class SignInFormFactory
                             $this->user->setExpiration($values->remember ? '14 days' : '20 minutes');
                             $this->user->login($values->username, $values->password);
 			} catch (Nette\Security\AuthenticationException $e) {
-                            $form->addError('Špatné uživatelské jméno nebo heslo.');
-                            $form['username']->addError('Test username error.');
-                            $form['password']->addError('Test password error.');
+                            $form->addError('Špatné uživatelské jméno (email) nebo heslo.');
+                            //$form['username']->addError('Test username error.');
+                            //$form['password']->addError('Test password error.');
                             return;
 			}
 			$onSuccess();

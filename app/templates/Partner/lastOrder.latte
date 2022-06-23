@@ -1,14 +1,14 @@
 {block content}
     {if}
-    <div class="panel panel-info">
+    <div class="panel panel-success">
         <div class="panel-heading">
-            <h3 n:block=title>Zboží v košíku</h3>
+            <h3 n:block=title>Objednávka č.{$obj->id}</h3>
         </div>
         <div class="panel-body">
-            {*$cartID*}
-            {var $cartTotal = 0}
-        {foreach $cart as $r}
-            {do $cartTotal += $r->pocet*$r->cena_zbozi_bez_dph}
+            <h5>Datum vytvoření: {$obj->datum|date:'%d.%m.%Y'}{if $obj->jmeno}, uživatelem {$obj->jmeno}{/if}</h5>
+        </div>    
+        <div class="panel-body">
+        {foreach $items as $r}
             {if $iterator->first}
             {var $kategorie = $r->kategorie_id}
             {var $color = true}           
@@ -17,7 +17,6 @@
               <th>Název</th>
               <th class="text-right">Počet</th>
               <th class="text-right">Balení</th>
-              <th class="text-right">Cena bez DPH</th>
             </tr>
             {else}
                 {if $kategorie != $r->kategorie_id}
@@ -30,41 +29,36 @@
                 <td {*if $color}class="danger"{else}class="info"{/if*}>{$r->nazev}</td>
                 <td class="text-right">{$r->pocet}</td>
                 <td class="text-right">{= intdiv($r->pocet,$r->baleni)} {if fmod($r->pocet,$r->baleni)>0}({= fmod($r->pocet,$r->baleni)}){/if}</td>
-                <td class="text-right">{= ($r->pocet*$r->cena_zbozi_bez_dph|round:2)|number:2, ',', ' '}</td>
             </tr>
 
             {if $iterator->last}</table>{/if}
         {/foreach}            
         </div>    
-        <div class="panel-footer" n:if="$cartTotal > 0">
+        {*<div class="panel-footer" n:if="$cartTotal > 0">
             Celkem bez DPH: {$cartTotal|number:2, ',', ' '}
-        </div>  
+        </div>  *}
     </div>
-    <div class="panel panel-info">
-        <div class="btn-group btn-group-justified">
-            <a n:href="Partner:itemList" class="btn btn-primary">Upravit počty</a>
-            <a n:href="Cart:emptyCart" class="btn btn-danger">Vyprázdnit košík</a>
+    
+    <div class="container-fluid">
+        <div class="list-group">
+            <div class="row">          
+                <a n:href="addItemsFromLastOrder" class="list-group-item col-xs-12 col-md-6 list-group-item-success">Přidat všechny položky do košíku</a>               
+                <a n:href="copyLastOrder" class="list-group-item col-xs-12 col-md-6 list-group-item-success">Vytvořit kopii objednávky</a>
+            </div>
         </div>
     </div>
+       
+    {else}
     <div class="panel panel-success">
         <div class="panel-heading">
-            <h4>Dokončení objednávky</h4>
-        </div>
-    </div>
-        
-        {control makeOrderForm}
-    
-    {else}
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <h3>Košík je prázdný</h3>
+            <h3>Objednávka je prázdná</h3>
         </div>            
     </div>
+    {/if isset($r)}
     <div class="panel panel-info">
         <div class="btn-group btn-group-justified">
             <a n:href="Partner:itemList" class="btn btn-primary">Vybrat položky k objednání</a>
         </div>
     </div>
-    {/if isset($r)}
 
 {/block}

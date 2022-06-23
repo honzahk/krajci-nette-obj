@@ -16,6 +16,7 @@ use Tracy\Debugger;
 
 class PartnerPresenter extends BasePresenter
 {
+    //protected $checkPartnerIDCounter;
 
     /** @var Model\CartManager */
     protected $cartManager;
@@ -67,7 +68,42 @@ class PartnerPresenter extends BasePresenter
         $this->redrawControl('itemsContainer');
         
     }
-       
+
+    /**
+     * Obsluha ajax volání - přidá/odebere položku do/z košíku
+     * Používá se pouze ve verzi renderItemListTest(), v ostré verzi nikoliv
+     * @param int $zbozi_id ID zboží
+     * @param int $pocet počet +/-
+     */
+    public function handleUpdatePocet($zbozi_id,$pocet)
+    {
+        $this->checkPartnerID();
+        
+        if ((!Validators::isNumeric($zbozi_id)) || (!Validators::isNumeric($pocet))) {
+            $this->flashMessage('Neočekávaný typ (int).','w3-red');
+            $this->redirect('itemList');
+        }
+        if (!$this->cartManager->addItem($this->getUser()->getId(),$this->partnerID,$zbozi_id,$pocet)) {
+            $this->flashMessage('Položku se nepodařilo upravit!','w3-red');
+            $this->redirect('Partner:default');
+        }
+
+        if ($this->isAjax()) {
+            $items = $this->partnerManager->getUserPartnerZboziID(
+                    $this->getUser()->getId(),$this->partnerID, $zbozi_id
+                    )->fetchAll();
+        } else {
+            $items = $this->partnerManager->getUserPartnerZbozi(
+                    $this->getUser()->getId(),$this->partnerID
+                    )->fetchAll();
+        }
+        if ($items) {
+            $this->template->items = $items;
+        }
+        $this->redrawControl('itemsContainer');
+        
+    }
+        
     /**
      * Načte seznam všech partnerů uživatele. Admin se zatím nerozlišuje - vrací
      * stejnou množinu. Pokud bych umožnil někomu opravdu hodně partnerů, pak
@@ -136,6 +172,110 @@ class PartnerPresenter extends BasePresenter
     }
     
     /**
+     * Přidá/odebere položku do/z košíku
+     * Celkový počet, jestli je v násobcích min_obj, bude kontrolován až před 
+     * překlopením košíku do objednávky.
+     * Nepoužívá se, pouze pro první testy..
+     * @param int $zbozi_id ID zboží
+     * @param int $pocet počet +/-
+     */
+    public function actionUpravPocet($zbozi_id,$pocet)
+    {    
+        $this->checkPartnerID();
+        
+        //$this->flashMessage($partner_id,'w3-red');
+        if ((!Validators::isNumeric($zbozi_id)) || (!Validators::isNumeric($pocet))) {
+            $this->flashMessage('Neočekávaný typ (int).','w3-red');
+            $this->redirect('itemList');
+        }
+        if (!$this->cartManager->addItem($this->getUser()->getId(),$this->partnerID,$zbozi_id,$pocet)) {
+            $this->flashMessage('Položku se nepodařilo upravit!','w3-red');
+        }
+        $this->redirect('itemList');
+    }
+    
+    /**
+     * Smaže aktuální košík a přidá do něho položky z poslední objednávky.
+     */
+    public function actionCopyLastOrder()
+    {    
+        $this->checkPartnerID();
+        
+        $obj = $this->partnerManager->getLastOrderID($this->partnerID);
+        if (!$obj) {
+            $this->flashMessage('Nebyla nalezena žádná objednávka v historii!','w3-red');
+        } else {
+
+            $cartID = $this->cartManager->getCartIDByUP(
+                    $this->getUser()->getId(),$this->partnerID
+            );
+            if ($cartID) {
+                $cart = $this->cartManager->removeCartItems($cartID);
+            }
+
+            $rc = $this->cartManager->addItemsFromOrder(
+                $this->getUser()->getId(),$this->partnerID,$obj['id']);
+            if (!$rc) {
+                $this->flashMessage('Nebyly přidány žádné položky!','w3-red');
+            } else {
+                $this->flashMessage("Byla vytvořena kopie objednávky.",'w3-blue');                
+            }            
+        }
+        
+        $this->redirect('Cart:default');
+    }
+
+    /**
+     * Přidá do aktuálního košíku zboží z poslední objednávky - pokud zboží 
+     * v košíku ještě není, pak přidá, jinak přičte počty.
+     */
+    public function actionAddItemsFromLastOrder()
+    {    
+        $this->checkPartnerID();
+        
+        $obj = $this->partnerManager->getLastOrderID($this->partnerID);
+        if (!$obj) {
+            $this->flashMessage('Nebyla nalezena žádná objednávka v historii!','w3-red');
+        } else {
+            $rc = $this->cartManager->addItemsFromOrder(
+                $this->getUser()->getId(),$this->partnerID,$obj['id']);
+            if (!$rc) {
+                $this->flashMessage('Nebyly přidány žádné položky!','w3-red');
+            } else {
+                $this->flashMessage("Byly přidány položky z objednávky.",'w3-blue');                
+            }            
+        }
+        
+        $this->redirect('Cart:default');
+    }
+    
+    /**
+     * Přidá do aktuálního košíku zboží z poslední objednávky - ale pouze 
+     * položky, které jsou v oblíbených. Pokud zboží v košíku ještě není, 
+     * pak přidá, jinak přičte počty.
+     */
+    public function actionAddFavItemsFromLastOrder()
+    {    
+        $this->checkPartnerID();
+        
+        $obj = $this->partnerManager->getLastOrderID($this->partnerID);
+        if (!$obj) {
+            $this->flashMessage('Nebyla nalezena žádná objednávka v historii!','w3-red');
+        } else {
+            $rc = $this->cartManager->addFavItemsFromOrder(
+                $this->getUser()->getId(),$this->partnerID,$obj['id']);
+            if (!$rc) {
+                $this->flashMessage('Nebyly přidány žádné položky!','w3-red');
+            } else {
+                $this->flashMessage("Byly přidány položky z objednávky.",'w3-blue');                
+            }            
+        } 
+        
+        //$this->redirect('itemListFav');
+        $this->redirect('Cart:default');        
+    }
+    
+    /**
      * Zobrazení editoru jedné položky košíku. Může být voláno i po obsluze
      * ajaxem.
      * @param int $zbozi_id ID zboží
@@ -150,6 +290,11 @@ class PartnerPresenter extends BasePresenter
         $item = $this->partnerManager->getUserPartnerZboziID(
                 $this->getUser()->getId(),$this->partnerID, $zbozi_id
                 );        
+        // POZOR - nefunguje, getUserPartnerZboziID vraci resultset, musi se 
+        // pouzit fetch()!!!
+        //if (!$item) {
+        //    $this->redirect('itemList');            
+        //}        
         $itemArr = $item->fetch();
         if (!$itemArr) {
             $this->redirect('itemList');            
@@ -186,6 +331,25 @@ class PartnerPresenter extends BasePresenter
     }
 
     /**
+     * Zobrazí základní seznam zboží partnera dle kategorií pro jeho
+     * výběr/odebrání do/z oblíbených položek - to je pak řešeno ajaxem.
+     */
+    public function renderItemListFavEdit()
+    {                
+        // pri ajaxovem volani jiz kontrola probehla
+        if (!$this->isAjax()) {
+            $this->checkPartnerID();
+        }
+        
+        if (!isset($this->template->items)) {            
+            $items = $this->partnerManager->getPartnerZboziFav($this->partnerID)->fetchAll();
+            if ($items) {
+                $this->template->items = $items; 
+            }        
+        }                       
+    }    
+
+    /**
      * Zobrazí základní seznam zboží partnera dle kategorií.
      * Každé zboží je pak proklikem na editaci tohoto konkrétního zboží.
      * Pokud je zadána kategorie, rozbalí se, jinak se rozbalí první kategorie
@@ -194,6 +358,131 @@ class PartnerPresenter extends BasePresenter
      */
     public function renderItemList($kategorie_id)
     {                
+        // pri ajaxovem volani jiz kontrola probehla
+        if (!$this->isAjax()) {
+            $this->checkPartnerID();
+        }
+        
+        $sessionSection = $this->getSession()->getSection('base');
+        if ($sessionSection->get('oblibene')) {
+            $sessionSection->remove('oblibene');
+        }
+        
+        if (!isset($this->template->items)) {
+            
+            $items = $this->partnerManager->getUserPartnerZbozi(
+                    $this->getUser()->getId(),$this->partnerID
+                    )->fetchAll();
+            if ($items) {
+                // POZOR, pokud bych vyse volal prirazeni bez fetchAll();,
+                // pak by doslo ke dvema problemum:
+                // 1. spatne by se vyhodnotila podminka if ($items) { - vzdy
+                //    by byla true
+                // 2. prirazeni do sablony by pak neumoznilo dvojity pruchod 
+                //    pres foreach v sablone !!!! Abych ho mohl pouzit, musim 
+                //    prevest ResultSet na Array (fetchAll). Toto se da resit 
+                //    ale napriklad predanim dalsiho datoveho zdroje jen 
+                //    s kategoriemi
+                $this->template->items = $items; 
+            }        
+        }
+        
+        if ($kategorie_id) {
+            $this->template->kat_aktivni = $kategorie_id;
+        }
+        
+        $zavoz = $this->partnerManager->vratZavoz($this->partnerID);
+        if ($zavoz) {
+            $this->template->zavoz = $zavoz;
+        }
+        
+        //$this->template->checkPartnerIDCounter = $this->checkPartnerIDCounter;
+        //$this->redrawControl('counterContainer');
+    }    
+    
+    /**
+     * Zobrazí seznam jen oblíbených položek zboží partnera dle kategorií.
+     * Každé zboží je pak proklikem na editaci tohoto konkrétního zboží.
+     * Pokud je zadána kategorie, rozbalí se, jinak se rozbalí první kategorie
+     * (to je řešeno v latte - first) - pokud tedy nakonec nebudou kategorie
+     * v tomto zoobrazení zrušeny.
+     * @param int $kategorie_id
+     */
+    public function renderItemListFav($kategorie_id)
+    {                
+        // pri ajaxovem volani jiz kontrola probehla
+        if (!$this->isAjax()) {
+            $this->checkPartnerID();
+        }
+
+        $sessionSection = $this->getSession()->getSection('base');
+        if (!$sessionSection->get('oblibene')) {
+            $sessionSection->set('oblibene',true);
+        }
+        
+        if (!isset($this->template->items)) {
+                       
+            $items = $this->partnerManager->getUserPartnerZboziOblibene(
+                    $this->getUser()->getId(),$this->partnerID
+                    )->fetchAll();
+            if ($items) {
+                $this->template->items = $items; 
+            } else {
+                // jeste zadne oblibene polozky neexistuji
+                $this->flashMessage('Oblíbené položky musíte nejprve definovat','w3-red');
+                $this->redirect('itemListFavEdit');                
+            }
+        }
+        
+        if ($kategorie_id) {
+            $this->template->kat_aktivni = $kategorie_id;
+        }
+        
+        $zavoz = $this->partnerManager->vratZavoz($this->partnerID);
+        if ($zavoz) {
+            $this->template->zavoz = $zavoz;
+        }
+        
+    }    
+    
+    /**
+     * Původní zobrazení seznamu zboží - úprava počtů jen ajaxem, bez možnosti 
+     * zadání počtu
+     */
+    public function renderItemListTest()
+    {
+        // pri ajaxovem volani jiz kontrola probehla
+        if (!$this->isAjax()) {
+            $this->checkPartnerID();
+        }
+        
+        if (!isset($this->template->items)) {
+                       
+            $items = $this->partnerManager->getUserPartnerZbozi(
+                    $this->getUser()->getId(),$this->partnerID
+                    )->fetchAll();
+            if ($items) {
+                $this->template->items = $items; 
+            }        
+        }        
+        
+        $zavoz = $this->partnerManager->vratZavoz($this->partnerID);
+        if ($zavoz) {
+            $this->template->zavoz = $zavoz;
+        }
+        
+        //$this->template->checkPartnerIDCounter = $this->checkPartnerIDCounter;
+        //$this->redrawControl('counterContainer');
+        
+        $this->template->setFile(dirname(__FILE__) . '/../templates/Partner/itemList_div_all.latte');
+    }    
+
+    /**
+     * Testovací funkce na testování různých druhů zobrazení seznamu kategorií
+     * se zbožím
+     */
+    public function renderItemListBSTest()
+    {
         // pri ajaxovem volani jiz kontrola probehla
         if (!$this->isAjax()) {
             $this->checkPartnerID();
@@ -209,15 +498,10 @@ class PartnerPresenter extends BasePresenter
             }        
         }
         
-        if ($kategorie_id) {
-            $this->template->kat_aktivni = $kategorie_id;
-        }
-        
         $zavoz = $this->partnerManager->vratZavoz($this->partnerID);
         if ($zavoz) {
             $this->template->zavoz = $zavoz;
-        }
-        
+        }        
     }    
 
     /**
@@ -233,10 +517,15 @@ class PartnerPresenter extends BasePresenter
         
         $form->addProtection(); // Cross-Site Request Forgery (CSRF) attack protection
 
+        //$form->addHidden('zbozi_id', 127);
+        //$form->addHidden('nazev', 'Cyrilovy brambůrky hořčicové 100g');
+        //$form->addHidden('baleni', 20); 
         $form->addHidden('zbozi_id');
         $form->addHidden('baleni'); 
         $form->addHidden('kategorie_id');
         $form->addInteger('pocet_bal', 'Balení:')
+                //->setDefaultValue(0)
+                //->setHtmlAttribute('id', $id)
                 ->setHtmlAttribute('class', 'form-control input-number')
                 ->setRequired('Zadejte prosím počet') // text se ignoruje
                 ->addRule($form::MIN, 'Počet nesmí být záporný.', 0); // text se ignoruje
@@ -252,7 +541,11 @@ class PartnerPresenter extends BasePresenter
     public function itemEditorFormSucceeded($form, $data)
     {
         $this->checkPartnerID();
-              
+        
+        Debugger::barDump($data);
+        //$form->addError('obecná chyba...');
+        //$form['pocet_bal']->addError('chyba balení...');
+        
         $zbozi_id = $data['zbozi_id'];
         $pocet = $data['baleni']*$data['pocet_bal'];      
         if (isset($data['pulka'])) {
@@ -261,14 +554,96 @@ class PartnerPresenter extends BasePresenter
             }
         }
         
+        $sessionSection = $this->getSession()->getSection('base');
+        if ($sessionSection->get('oblibene')) {
+            $listParam = 'itemListFav';
+        } else {
+            $listParam = 'itemList';
+        }
+                    
         if (!$this->cartManager->setItem($this->getUser()->getId(),$this->partnerID,$zbozi_id,$pocet)) {
             $this->flashMessage('Položku se nepodařilo upravit!','w3-red');
-            $this->redirect('Partner:itemList');
+            //$this->redirect('Partner:itemList');
+            $this->redirect('Partner:'.$listParam);
         }
         if (isset($data['kategorie_id'])) {
-            $this->redirect('Partner:itemList',$data['kategorie_id']);
+            //$this->redirect('Partner:itemList',$data['kategorie_id']);
+            $this->redirect('Partner:'.$listParam,$data['kategorie_id']);
         } else {
-            $this->redirect('Partner:itemList');
+            //$this->redirect('Partner:itemList');
+            $this->redirect('Partner:'.$listParam);
         }
     }
+
+    /**
+     * Obsluha ajax volání - přidá/odebere položku do/z oblíbených
+     * @param int $zbozi_id ID zboží
+     * @param string $akce add/del
+     */
+    public function handleUpdateFav($zbozi_id,$akce)
+    {
+        $this->checkPartnerID();
+        
+        if (!Validators::isNumeric($zbozi_id)) {
+            $this->flashMessage('Neočekávaný typ (int).','w3-red');
+            $this->redirect('itemListFavEdit');
+        }
+        
+        // samotna akce pridani/odebrani
+        if ($akce == 'add') {
+            // pridame
+            $this->partnerManager->addFavItem($this->partnerID, $zbozi_id);
+        } else {
+            // odebereme
+            $this->partnerManager->deleteFavItem($this->partnerID, $zbozi_id);            
+        }
+
+        if ($this->isAjax()) {
+            $items = $this->partnerManager->getPartnerZboziFavID(
+                    $this->partnerID, $zbozi_id
+                    )->fetchAll();
+        } else {
+            $items = $this->partnerManager->getPartnerZboziFav(
+                    $this->partnerID
+                    )->fetchAll();
+        }
+        if ($items) {
+            $this->template->items = $items;
+        }
+        $this->redrawControl('itemsContainer');
+        
+    }
+    
+    /**
+     * Zobrazí poslední objednávku
+     */
+    public function renderLastOrder()
+    {    
+        $this->checkPartnerID();
+        
+        $obj = $this->partnerManager->getLastOrderID($this->partnerID);
+        if (!$obj) {
+            $this->flashMessage('Nebyla nalezena žádná objednávka v historii!','w3-red');
+            $this->redirect('itemList');
+        }
+        
+        $items = $this->partnerManager->getUserPartnerZboziObj(
+                    $this->getUser()->getId(), $this->partnerID, $obj['id']
+                )->fetchAll();
+        if (!$items) {
+            // nebylo načtené žádné zboží, toto by nemělo nastat, jedině by
+            // třeba došlo ke smazání zboží z tabulky zbozi
+            $this->flashMessage('Nebylo nalezeno žádné zboží v historii!','w3-red');
+            $this->redirect('itemList');            
+        }
+        $this->template->obj = $obj;
+        $this->template->items = $items;
+                        
+    }
+    
+//    protected function startup() {
+//        parent::startup();
+//        $this->checkPartnerIDCounter = 0;
+//    }
+
 }
