@@ -1,2 +1,4 @@
 config/local.neon
+config/production.neon
 vendor
+nbproject
