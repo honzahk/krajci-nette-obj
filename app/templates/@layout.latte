@@ -46,6 +46,9 @@
 			</div>
 			<div id="navbar" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
+                                    {*<li n:class="$presenter->isLinkCurrent('Homepage:about') ? active">
+                                        <a n:href="Homepage:about">O projektu</a>
+                                    </li>*}
                                     <li n:class="$presenter->isLinkCurrent('Homepage:contact') ? active">
                                         <a n:href="Homepage:contact">Kontakt</a>
                                     </li>
@@ -84,16 +87,40 @@
                     <a n:href="User:editPassword">Změna hesla</a>
                 </li>
                 *}
-        {if $user->loggedIn}
-            {ifset $partnerAkt}
+    {if $user->loggedIn}
+        {ifset $partnerAkt}
                 <li n:class="$presenter->isLinkCurrent('Cart:default') ? active">
                     <a n:href="Cart:default">Košík</a>                    
                 </li>
                 <li n:class="$presenter->isLinkCurrent('Partner:itemList') ? active">
                     <a n:href="Partner:itemList">Veškeré zboží</a>                    
                 </li>
-            {/ifset}                                
-        {/if}                        
+                {*
+                <li n:class="$presenter->isLinkCurrent('Partner:itemList 2') ? active">
+                    <a n:href="Partner:itemList 2">Zboží Snacky</a>                    
+                </li>
+                <li n:class="$presenter->isLinkCurrent('Partner:itemCalc 20') ? active">
+                    <a n:href="Partner:itemCalc 20">Cyril sůl</a>                    
+                </li>
+                <li n:class="$presenter->isLinkCurrent('Partner:itemCalc 10') ? active">
+                    <a n:href="Partner:itemCalc 10">Pekařské sůl</a>                    
+                </li>
+                *}
+                {*
+                <li n:class="$presenter->isLinkCurrent('Partner:itemListBSTest') ? active">
+                    <a n:href="Partner:itemListBSTest">Item List BS Test</a>                    
+                </li>
+                <li n:class="$presenter->isLinkCurrent('Partner:itemListTest') ? active">
+                    <a n:href="Partner:itemListTest">Zboží+editace</a>                    
+                </li>
+                *}
+        {/ifset}                                
+    {/if}                        
+        {*
+        {if $admin}
+                <li><a n:href="Homepage:test">Test (jen admin)</a></li>
+        {/if}
+        *}
     {else}
                 <li n:class="$presenter->isLinkCurrent('Sign:in') ? active">
                     <a n:href="Sign:in"><span class="glyphicon glyphicon-log-in"></span> Přihlásit</a>
@@ -107,6 +134,7 @@
         <div class="page-content">
             <div class="container-fluid">
         {foreach $flashes as $flash}
+                {* <div n:class="alert, flash, $flash->type"> *}
                 <div n:class="alert, $flash->type">
                     {$flash->message}
                 </div>
