@@ -230,7 +230,7 @@ class UserManager extends BaseManager implements Nette\Security\Authenticator, N
                     // pro případ, že bych přidal další UNIQUE sloupec a zapomněl ho tady pohlídat
                     throw $e;
                 }
-            }                    			
+            }
         }
     }
 
