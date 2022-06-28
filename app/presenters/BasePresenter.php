@@ -59,7 +59,7 @@ abstract class BasePresenter extends Presenter
      * Jejich použitím si totiž ponecháme konstruktor volný pro potomky.
      */
     
-     /* 
+    /** 
      * @param FormFactory $factory
      * @param PartnerManager $partnerManager
      */
