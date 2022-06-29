@@ -1,13 +1,16 @@
 {block content}
-    <div class="container-fluid">
-        <div class="list-group">
-            <div class="row">          
-                {*<a n:href="addItemsFromLastOrder" class="list-group-item col-xs-12 col-md-6 list-group-item-info">Přidat položky z poslední objednávky</a>*}
-                <a n:href="lastOrder" class="list-group-item col-xs-12 col-md-6 list-group-item-success">Zobrazit poslední objednávku</a>               
-                <a n:href="itemListFav" class="list-group-item col-xs-12 col-md-6 list-group-item-warning">Zobrazit jen oblíbené položky</a>
-            </div>
-        </div>
-    </div>
+    <div class="panel panel-info">
+		<div class="container-fluid">
+		<div class="row padbottom0"><h4>Filtr</h4></div>
+			<div class="list-group">
+				<div class="row">          
+					{*<a n:href="addItemsFromLastOrder" class="list-group-item col-xs-12 col-md-6 list-group-item-info">Přidat položky z poslední objednávky</a>*}
+					<a n:href="lastOrder" class="list-group-item col-xs-12 col-md-6 list-group-item-filter"><i class="glyphicon glyphicon-tags"></i> Zobrazit poslední objednávku</a>               
+					<a n:href="itemListFav" class="list-group-item col-xs-12 col-md-6 list-group-item-filter"><i class="glyphicon glyphicon-heart"></i> Zobrazit jen oblíbené položky</a>
+				</div>
+			</div>
+		</div>
+	</div>
     <div class="panel panel-info">
         <div class="panel-heading">
             <h3 n:block=title>Zboží k objednání</h3>
@@ -15,85 +18,164 @@
                 <h6>{$r['datum']} - {$r['mask']}</h6>
             {/foreach *}            
         </div>
-    </div>
-
-{var $katColor = ['info','danger','success','warning']}
-<div class="container-fluid">
-    <div class="list-group">
-        <div class="row">          
-    {foreach $items as $r}
-        <a class="list-group-item col-xs-6 col-md-3 list-group-item-{$katColor[$r->kategorie_id-1]}" 
-           data-parent="#accordion" data-toggle="collapse" href="#collapse-{$r->kategorie_id}" 
-            {ifset $kat_aktivni}
-           aria-expanded="{if $kat_aktivni == $r->kategorie_id}true{else}false{/if}"
-            {else}
-           aria-expanded="{if $iterator->first}true{else}false{/if}"
-            {/ifset}           
-           aria-controls="collapse-{$r->kategorie_id}">
-            {$r->kategorie_nazev}
-        </a>
-        {iterateWhile}
-        {/iterateWhile $r->kategorie_id === $iterator->nextValue->kategorie_id}
-    {/foreach}
-        </div>    
-    </div>    
-</div>        
-        
-        
-    {snippet itemsContainer}
-    {var $katColor = ['info','danger','success','warning']}
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-    {foreach $items as $r}
-        <div class="panel panel-{$katColor[$r->kategorie_id-1]}">
-            <div class="panel-heading" role="tab" id="heading-{$r->kategorie_id}">
-                <h4 class="panel-title">
-                  <a role="button" data-toggle="collapse" data-parent="#accordion" 
-                     href="#collapse-{$r->kategorie_id}" 
-                      {ifset $kat_aktivni}
-                     aria-expanded="{if $kat_aktivni == $r->kategorie_id}true{else}false{/if}"
-                      {else}
-                     aria-expanded="{if $iterator->first}true{else}false{/if}"
-                      {/ifset}                                
-                     aria-controls="collapse-{$r->kategorie_id}">
-                    {$r->kategorie_nazev}
-                  </a>
-                </h4>
-            </div>
-            <div id="collapse-{$r->kategorie_id}"
-                 {ifset $kat_aktivni}
-                 class="panel-collapse collapse{if $kat_aktivni == $r->kategorie_id} in{/if}" 
-                 {else}
-                 class="panel-collapse collapse{if $iterator->first} in{/if}"
-                 {/ifset}                                
-                 role="tabpanel" aria-labelledby="heading-{$r->kategorie_id}">
-                <div class="panel-body">
-                    <div class="container-fluid">
-                        <div class="row">          
-                            <div class="col-xs-12 col-md-4">Název</div>
-                            <div class="col-xs-3 col-md-2 baleni">Počet v balení</div>
-                            <div class="col-xs-3 col-md-2 baleni">Cena za ks</div>
-                            <div class="col-xs-3 col-md-2 baleni">Počet v košíku</div>
-                            <div class="col-xs-3 col-md-2 baleni">Balení v košíku</div>                            
-                        </div>
-                    {iterateWhile}
-                        <div class="row bg-{$katColor[$r->kategorie_id-1]}"> 
-                            <div class="col-xs-12 col-md-4"><a n:href="Partner:itemCalc $r->zbozi_id">{$r->nazev}</a></div>                            
-                            <div class="col-xs-3 col-md-2 baleni">{$r->baleni}</div>
-                            <div class="col-xs-3 col-md-2 baleni">{$r->cena_zbozi_bez_dph|number:2, ',', ' '}</div>
-                            <div class="col-xs-3 col-md-2 baleni" n:snippet="item-$r->zbozi_id">{if $r->pocet > 0}{$r->pocet}{else}&nbsp;{/if}</div>
-                            <div class="col-xs-3 col-md-2 baleni" n:snippet="item-$r->zbozi_id-bal">{if $r->pocet > 0}{= intdiv($r->pocet,$r->baleni)} {if fmod($r->pocet,$r->baleni)>0}({= fmod($r->pocet,$r->baleni)}){/if}{else}&nbsp;{/if}</div>
-                        </div>
-                    {/iterateWhile $r->kategorie_id === $iterator->nextValue->kategorie_id}
-                    </div>
+		<div class="panel-body">
+		
+		{var $katColor = ['info','danger','success','warning']}
+        <div class="container-fluid">
+            <div class="list-group">
+                <div class="row">          
+                    {foreach $items as $r}
+                        <a class="list-group-item col-xs-6 col-md-3 list-group-item-{$katColor[$r->kategorie_id-1]}" 
+                           data-parent="#accordion" data-toggle="collapse" href="#collapse-{$r->kategorie_id}" 
+                            {ifset $kat_aktivni}
+                           aria-expanded="{if $kat_aktivni == $r->kategorie_id}true{else}false{/if}"
+                            {else}
+                           aria-expanded="{if $iterator->first}true{else}false{/if}"
+                            {/ifset}           
+                           aria-controls="collapse-{$r->kategorie_id}">
+                            {$r->kategorie_nazev}
+                        </a>
+                        {iterateWhile}
+                        {/iterateWhile $r->kategorie_id === $iterator->nextValue->kategorie_id}
+                    {/foreach}
                 </div>    
             </div>    
-        </div>    
-    {/foreach}
-    </div>         
-    {/snippet}
-    <div class="panel panel-info">
-        <div class="btn-group btn-group-justified">
-            <a n:href="Cart:default" class="btn btn-primary">Přejít k objednání</a>
-        </div>
-    </div>        
+        </div>        
+
+
+            {*snippet itemsContainer*}
+            {var $katColor = ['info','danger','success','warning']}
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            {foreach $items as $r}
+                <div class="panel panel-{$katColor[$r->kategorie_id-1]}">
+                    <div class="panel-heading" role="tab" id="heading-{$r->kategorie_id}">
+                        <h4 class="panel-title">
+                          <a role="button" data-toggle="collapse" data-parent="#accordion" 
+                             href="#collapse-{$r->kategorie_id}" 
+                              {ifset $kat_aktivni}
+                             aria-expanded="{if $kat_aktivni == $r->kategorie_id}true{else}false{/if}"
+                              {else}
+                             aria-expanded="{if $iterator->first}true{else}false{/if}"
+                              {/ifset}                                
+                             aria-controls="collapse-{$r->kategorie_id}">
+                            {$r->kategorie_nazev}
+                          </a>
+                        </h4>
+                    </div>
+                    <div id="collapse-{$r->kategorie_id}"
+                         {ifset $kat_aktivni}
+                         class="panel-collapse collapse{if $kat_aktivni == $r->kategorie_id} in{/if}" 
+                         {else}
+                         class="panel-collapse collapse{if $iterator->first} in{/if}"
+                         {/ifset}                                
+                         role="tabpanel" aria-labelledby="heading-{$r->kategorie_id}">
+                        <div class="panel-body">
+                            <div class="container-fluid">
+                                <div class="row">          
+                                    <div class="col-xs-12 col-md-4">Název</div>
+                                    <div class="col-xs-3 col-md-2 baleni">Počet v balení</div>
+                                    <div class="col-xs-3 col-md-2 baleni">Cena za ks</div>
+                                    <div class="col-xs-3 col-md-2 baleni">Počet v košíku</div>
+                                    <div class="col-xs-3 col-md-2 baleni">Balení v košíku</div>                            
+                                </div>
+                            {iterateWhile}
+                                <div class="row bg-{$katColor[$r->kategorie_id-1]}"> 
+                                    <div class="col-xs-12 col-md-4"><a n:href="Partner:itemCalc $r->zbozi_id">{$r->nazev}</a></div>                            
+                                    <div class="col-xs-3 col-md-2 baleni">{$r->baleni}</div>
+                                    <div class="col-xs-3 col-md-2 baleni">{$r->cena_zbozi_bez_dph|number:2, ',', ' '}</div>
+                                    <div class="col-xs-3 col-md-2 baleni" n:snippet="item-$r->zbozi_id">{if $r->pocet > 0}{$r->pocet}{else}&nbsp;{/if}</div>
+                                    <div class="col-xs-3 col-md-2 baleni" n:snippet="item-$r->zbozi_id-bal">{if $r->pocet > 0}{= intdiv($r->pocet,$r->baleni)} {if fmod($r->pocet,$r->baleni)>0}({= fmod($r->pocet,$r->baleni)}){/if}{else}&nbsp;{/if}</div>
+                                </div>
+                            {/iterateWhile $r->kategorie_id === $iterator->nextValue->kategorie_id}
+                            </div>
+                        </div>    
+                    </div>    
+                </div>    
+            {/foreach}
+            </div>         
+            {*/snippet*}
+				
+				
+<!-- DUSAN TABS -->
+<p>!!!!!!!!!!DEVELOP TABS!!!!!!!!!!!!!!!</p>
+<script>
+(function( $ ){
+  $.fn.autowidth = function() {
+    return this.each(function() {        
+        $('li', this).css({'width' : (100 / $('li', this).length) + '%'})
+    });
+  };
+})( jQuery );
+
+$(document).ready(function(){
+    $('nav.full > ul').autowidth();    
+});
+</script>
+
+{var $katColor = ['bramburky','snacky','tycinky','plody']}
+<div id="exTab1">	
+	<nav class="full" role="navigation">
+	<ul class="nav nav-tabs">
+	{foreach $items as $r}
+		<li class="panel panel-{$katColor[$r->kategorie_id-1]} {ifset $kat_aktivni}{if $kat_aktivni == $r->kategorie_id}{/if}{else}{if $iterator->first}active{/if}{/ifset}">
+			  <a href="#collapse-{$r->kategorie_id}" data-toggle="tab">{$r->kategorie_nazev}</a>
+		</li>
+		{iterateWhile}
+			  {/iterateWhile $r->kategorie_id === $iterator->nextValue->kategorie_id}
+	{/foreach}	
+	</ul>
+	</nav>  
+
+	
+	{var $katColor = ['bramburky','snacky','tycinky','plody']}
+		<div class="tab-content clearfix">
+		{foreach $items as $r}
+			<div class="tab-pane {ifset $kat_aktivni}{if $kat_aktivni == $r->kategorie_id}{/if}{else}{if $iterator->first}active{/if}{/ifset}" id="collapse-{$r->kategorie_id}">
+
+				
+					  <div class="container-fluid">
+							<div class="row">          
+								 <div class="col-xs-12 col-md-4">Název</div>
+								 <div class="col-xs-3 col-md-2 baleni">Počet v balení</div>
+								 <div class="col-xs-3 col-md-2 baleni">Cena za ks</div>
+								 <div class="col-xs-3 col-md-2 baleni">Počet v košíku</div>
+								 <div class="col-xs-3 col-md-2 baleni">Balení v košíku</div>                            
+							</div>
+					  {iterateWhile}
+							<div class="row bg-{$katColor[$r->kategorie_id-1]}"> 
+								 <div class="col-xs-12 col-md-4"><a n:href="Partner:itemCalc $r->zbozi_id">{$r->nazev}</a></div>                            
+								 <div class="col-xs-3 col-md-2 baleni">{$r->baleni}</div>
+								 <div class="col-xs-3 col-md-2 baleni">{$r->cena_zbozi_bez_dph|number:2, ',', ' '}</div>
+								 <div class="col-xs-3 col-md-2 baleni" n:snippet="item-$r->zbozi_id">{if $r->pocet > 0}{$r->pocet}{else}&nbsp;{/if}</div>
+								 <div class="col-xs-3 col-md-2 baleni" n:snippet="item-$r->zbozi_id-bal">{if $r->pocet > 0}{= intdiv($r->pocet,$r->baleni)} {if fmod($r->pocet,$r->baleni)>0}({= fmod($r->pocet,$r->baleni)}){/if}{else}&nbsp;{/if}</div>
+							</div>
+					  {/iterateWhile $r->kategorie_id === $iterator->nextValue->kategorie_id}
+					  </div>
+				 
+
+			</div>
+		{/foreach}
+	</div>
+	
+</div>
+<!-- DUSAN TABS end --> 
+				
+
+            <div class="panel panel-info">
+                <div class="btn-group btn-group-justified">
+                    <a n:href="Cart:default" class="btn btn-primary">Přejít k objednání</a>
+                </div>
+            </div> 
+		
+		</div>
+    </div>
+
+
+	 
+
+
+
+
+
+
 {/block}

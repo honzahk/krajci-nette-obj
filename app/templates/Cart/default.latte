@@ -38,21 +38,24 @@
         </div>    
         <div class="panel-footer" n:if="$cartTotal > 0">
             Celkem bez DPH: {$cartTotal|number:2, ',', ' '}
-        </div>  
-    </div>
-    <div class="panel panel-info">
-        <div class="btn-group btn-group-justified">
-            <a n:href="Partner:itemList" class="btn btn-primary">Upravit počty</a>
-            <a n:href="Cart:emptyCart" class="btn btn-danger">Vyprázdnit košík</a>
         </div>
+		<div class="panel panel-body">
+			<div class="btn-group btn-group-justified">
+				<a n:href="Partner:itemList" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i> Upravit počty</a>
+				<a n:href="Cart:emptyCart" class="btn btn-danger"><i class="glyphicon glyphicon-erase"></i> Vyprázdnit košík</a>
+			</div>
+    	</div>
     </div>
     <div class="panel panel-success">
         <div class="panel-heading">
             <h4>Dokončení objednávky</h4>
         </div>
+		<div class="panel-body">
+			{control makeOrderForm}
+		</div>
     </div>
         
-        {control makeOrderForm}
+        
     
     {else}
     <div class="panel panel-info">

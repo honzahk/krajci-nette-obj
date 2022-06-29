@@ -6,6 +6,7 @@
         <div class="panel-body">
         {foreach $partners as $p}
             {if $iterator->first}
+			<div class="table-responsive">
             <table class="table table-striped">
             <tr>
               <th>Název</th>
@@ -22,7 +23,7 @@
                 <td><a n:href="vyberPartnera $p->id" class="btn btn-primary">Vybrat</a></td>
             </tr>
 
-            {if $iterator->last}</table>{/if}
+            {if $iterator->last}</table></div>{/if}
         {/foreach}
         </div>    
     </div>

@@ -1,7 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+
 .row {
-   margin-top: 5px;
-   padding-top: 5px;
-   padding-bottom: 5px;
+	margin-top: 10px;
+   padding-top: 10px;
+   padding-bottom: 10px;
 }
 
 .baleni {
@@ -25,3 +28,235 @@
     }
       
   }
+
+
+
+
+
+
+/* ================= ================== ================= */
+/* ================= ================== ================= */
+/* ================= CUSTOM STYLE DUSAN ================= */ 
+/* 					LAST UPDATE : 19.06.2022, XX:XX:XX      */
+/* ================= ================== ================= */
+/* ================= ================== ================= */
+
+/* COLORS KRAJCI for copying
+#f8f8f8	- gray soft (backgrounds etc)
+#f2f2f2	- gray medium (backgrounds etc)
+#adadad	- gray (headers, other typography)
+#333333	- gray dark (buttons bgs etc)
+#e5e5e5  - gray borders
+
+#e30613	- red krajci / hovers
+
+#1E1E2D 	- zkusebni pozadi sidebar / top / foot
+*/
+
+
+/* FONT CUSTOM */
+body {
+   font-family: 'Poppins', sans-serif;
+}
+/* FONT CUSTOM end */
+
+
+
+/* EFFECTS , TRANSITIONS */
+a, .btn {
+	transition: all .2s;
+}
+/* EFFECTS , TRANSITIONS end */
+
+
+
+/* COLORS KRAJCI*/
+body {
+   background: #f8f8f8;
+}
+#sidebar-wrapper, 
+.navbar-inverse,
+footer .w3-black {
+   background: #1E1E2D !important;
+}
+a {
+   color: #e30613;
+	font-weight: 600;
+}
+a:hover {
+   color: #333333;
+}
+
+.bg-bramburky, .panel-bramburky {
+   background: #ffedd7;
+	border: 1px solid #fff;
+}
+.bg-snacky, .panel-snacky {
+   background: #f2dede;
+	border: 1px solid #fff;
+}
+.bg-tycinky, .panel-tycinky {
+   background: #ded9f7;
+	border: 1px solid #fff;
+}
+.bg-plody, .panel-plody {
+   background: #d9f6f7;
+	border: 1px solid #fff;
+}
+/* COLORS KRAJCI end */
+
+
+/* PADDINGS */
+.padbottom0 {
+    padding-bottom: 0px;
+}
+/* PADDINGS end */
+
+
+/* BUTTONS */
+.btn {
+    padding: 13px 30px;
+    line-height: 17px;
+}
+.btn-primary {
+    color: #fff;
+    background-color: #333333;
+    border-color: #333333;
+}
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+    background-color: #000;
+    border-color: #000;
+}
+
+.btn-group-justified .btn-primary, .btn-group-justified .btn-danger {
+    border-color: #fff;
+}
+.w3-red {
+    color: #fff!important;
+    background-color: #22a124!important;
+}
+.w3-red:hover {
+    background-color: #1a8b1b!important;
+}
+
+.btn .glyphicon {
+   margin-right: 5px;
+}
+.btn.btn-number {
+   color: #fff; 
+	background-color: #333333;
+    border-color: #333333;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+    background-color: rgb(0 0 0 / 5%) !important;
+    border: 1px solid rgb(221 221 221 / 0%);
+}
+/* BUTTONS end */
+
+
+
+/* BODY, SIDEBAR, CONTENT BLOCKS */ 
+#page-content-wrapper {
+	/* height: calc(100vh - 40px); */
+	min-height: 100vh;
+}
+.container-fluid {
+   padding-right: 30px;
+   padding-left: 30px;
+}
+/* BODY, SIDEBAR, CONTENT BLOCKS end */ 
+
+
+/* SIDEBAR MENU */ 
+.sidebar-nav li {
+    line-height: 25px;
+    text-indent: 0px;
+    text-align: center;
+}
+.sidebar-nav li a {
+    padding-left: 0px;
+}
+.sidebar-nav .menuicon {
+   	text-align: center;
+	display: block;
+}
+.sidebar-nav .menuicon .glyphicon {
+   	font-size: 15px;
+	color: #fff;
+}
+.sidebar-nav .menutext {
+   	text-align: center;
+	font-weight: 400;
+}
+/* SIDEBAR MENU end */ 
+
+
+
+/* PANELS*/
+.panel {
+    margin-bottom: 40px;
+}
+.panel-success {
+    border-color: #ddd;
+}
+.panel-success>.panel-heading {
+    color: #333;
+    background-color: #ffffff;
+    border-color: #ddd;
+}
+.panel-info {
+    border-color: #e5e5e5;
+}
+.panel-info>.panel-heading {
+    color: #333;
+    background-color: #ffffff;
+    border-color: #ffffff;
+}
+/* PANELS end */
+
+
+/* LIST GROUPS */
+.list-group-item-filter {
+	background-color: #e0e0f1 !important;
+	border-radius: 4px !important;
+	border: 1px solid #e0e0f1;
+	border-right-color: #fff;
+	border-left-color: #fff;
+}
+.list-group-item-filter:hover {
+  	background-color: #d2d2e5 !important;
+}
+.list-group-item .glyphicon {
+  	color: #1e1e2d;
+   margin-right: 5px;
+}
+/* LIST GROUPS end */
+
+
+/* TABLES */
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+	padding: 10px;
+   line-height: 1.42857143;
+   vertical-align: baseline;
+   border-top: 1px solid #ddd;
+}
+/* TABLES end */
+
+
+/* FORMS */
+.input-text, .input-text:focus,
+.input-number, .input-number:focus {
+   background: #FFFFFF;
+   border: 1px solid #333333;
+   border-radius: 5px;
+   color: #333333;
+   box-shadow: none !important;
+	padding: 10px;
+}
+
+.form-group input.button {
+	width: 100%;
+}
+/* FORMS end */
+

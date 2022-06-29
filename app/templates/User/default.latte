@@ -1,15 +1,15 @@
 {block content}
-    <h1 n:block=title>Informace o přihlášeném uživateli</h1>
+    <!-- <h1 n:block=title>Informace o přihlášeném uživateli</h1> -->
     <div class="panel panel-info">
         <div class="panel-heading">
             <h3>Detail uživatele {$userDetail[login]} ({$userDetail[jmeno]}):</h3>
         </div>
-        <div class="panel-body">{include 'detail.latte'}</div>    
-    </div>
-    <div class="panel panel-info">
-        <div class="btn-group btn-group-justified">
+        <div class="panel-body">{include 'detail.latte'}
+			<div class="btn-group btn-group-justified">
             <a n:href="editAccount" class="btn btn-primary">Upravit login a email</a>
             <a n:href="editPassword" class="btn btn-primary">Změnit heslo</a>
-        </div>
+        	</div>
+		</div> 
+		
     </div>
 {/block}

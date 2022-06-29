@@ -1,17 +1,20 @@
 {block content}
-    <div class="container-fluid">
-        <div class="list-group">
-            <div class="row">
-                {*<a n:href="addFavItemsFromLastOrder" class="list-group-item col-xs-12 col-md-4 list-group-item-warning">Přidat oblíbené položky z poslední objednávky</a>*}
-                <a n:href="lastOrder" class="list-group-item col-xs-12 col-md-4 list-group-item-success">Zobrazit poslední objednávku</a>               
-                <a n:href="itemListFavEdit" class="list-group-item col-xs-12 col-md-4 list-group-item-warning">Upravit oblíbené položky</a>
-                <a n:href="itemList" class="list-group-item col-xs-12 col-md-4 list-group-item-info">Zobrazit všechny položky</a>
-            </div>
-        </div>
-    </div>
-    <div class="panel panel-warning">
+    <div class="panel panel-info">
+		<div class="container-fluid">
+		<div class="row padbottom0"><h4>Filtr</h4></div>
+			<div class="list-group">
+				<div class="row">
+					{*<a n:href="addFavItemsFromLastOrder" class="list-group-item col-xs-12 col-md-4 list-group-item-warning">Přidat oblíbené položky z poslední objednávky</a>*}
+					<a n:href="lastOrder" class="list-group-item col-xs-12 col-md-4 list-group-item-filter"><i class="glyphicon glyphicon-tags"></i> Zobrazit poslední objednávku</a>               
+					<a n:href="itemListFavEdit" class="list-group-item col-xs-12 col-md-4 list-group-item-filter"><i class="glyphicon glyphicon-heart"></i> Upravit oblíbené položky</a>
+					<a n:href="itemList" class="list-group-item col-xs-12 col-md-4 list-group-item-filter"><i class="glyphicon glyphicon glyphicon-list"></i> Zobrazit všechny položky</a>
+				</div>
+			</div>
+		</div>
+	</div>
+    <div class="panel panel-success">
         <div class="panel-heading">
-            <h3 n:block=title>Oblíbené položky</h3>
+            <h3 n:block=title>Vaše oblíbené položky</h3>
             {* foreach $zavoz as $r -- debugging}
                 <h6>{$r['datum']} - {$r['mask']}</h6>
             {/foreach *}            
@@ -37,9 +40,15 @@
             </div>
         </div>    
     </div>        
-    <div class="panel panel-info">
-        <div class="btn-group btn-group-justified">
-            <a n:href="Cart:default" class="btn btn-primary">Přejít k objednání</a>
+	 
+	 <div class="panel panel-success">
+	 		<div class="panel-heading">
+            <h3>Přejít k tvorbě objednávky</h3>
         </div>
-    </div>        
+		  <div class="panel-body">
+			  <div class="btn-group btn-group-justified">
+					<a n:href="Cart:default" class="btn btn-primary"><i class="glyphicon glyphicon-chevron-left"></i> Přejít k objednání</a>
+			  </div>
+		  </div>
+    </div>
 {/block}
