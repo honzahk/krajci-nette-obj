@@ -343,19 +343,36 @@ class UserManager extends BaseManager implements Nette\Security\Authenticator, N
         try {
             $this->database->table(self::TABLE_NAME)->where(self::COLUMN_ID, $user[self::COLUMN_ID])->update($user);
         } catch (Nette\Database\UniqueConstraintViolationException $e) {
-            if (isset($user[self::COLUMN_LOGIN])) {
-                $usercheck = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_LOGIN, $user[self::COLUMN_LOGIN])->fetch();
-                if ($usercheck) {
-                    throw new DuplicateNameException;                        
-                }            
-            } else {
-                $usercheck = $this->database->table(self::TABLE_NAME)->where(self::COLUMN_EMAIL, $user[self::COLUMN_EMAIL])->fetch();
-                if ($usercheck) {
-                    throw new DuplicateEmailException($usercheck[self::COLUMN_LOGIN]);
-                } else {
-                    // pro případ, že bych přidal další UNIQUE sloupec a zapomněl ho tady pohlídat
+            
+            // mame chybu unikatniho klice
+            // je treba rozdelit na volani UPDATE s loginem, emailem, pripadne dalsim klicem
+            // overim, k jake duplicite vlastne doslo
+            
+            // vytahnu aktualniho uzivatele
+            $usercheck = $this->database->table(self::TABLE_NAME)->
+                    where(self::COLUMN_ID, $user[self::COLUMN_ID])
+                    ->fetch();
+            if ($usercheck) {
+                if (($usercheck[self::COLUMN_LOGIN] == $user[self::COLUMN_LOGIN]) && 
+                    ($usercheck[self::COLUMN_EMAIL] == $user[self::COLUMN_EMAIL])) {
+                    // login i email je stejny, tedy mame jinou chybu - 
+                    // neosetreneho sloupce
                     throw $e;
+                } else {
+                    // overim chybu duplicity loginu
+                    $usercheck2 = $this->database->table(self::TABLE_NAME)->
+                            where(self::COLUMN_ID.' <> ? AND '.self::COLUMN_LOGIN.' = ?', $user[self::COLUMN_ID], $user[self::COLUMN_LOGIN])
+                            ->fetch();
+                    if ($usercheck2) {
+                        throw new DuplicateNameException;                        
+                    } else {
+                        // login v tabulce neexistuje, proto se jedna o chybu 
+                        // duplicity emailu
+                        throw new DuplicateEmailException($usercheck[self::COLUMN_LOGIN]);
+                    }
                 }
+            } else {      
+                throw $e; // nejaka divna, neosetrena chyba, jen preposlu
             }                    			
         }
     }
