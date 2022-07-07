@@ -1,30 +1,31 @@
 {block content}    
-    <div class="panel panel-info">
-        <div class="panel-heading">
-            <h3 n:block=title>Seznam poboček uživatele</h3>
-        </div>
-        <div class="panel-body">
-        {foreach $partners as $p}
-            {if $iterator->first}
-			<div class="table-responsive">
-            <table class="table table-striped">
-            <tr>
-              <th>Název</th>
-              <th>Název 2</th>
-              <th>Město</th>
-              <th></th>
-            </tr>
-            {/if}
-
-            <tr id="row-{$iterator->counter}">
-                <td><a n:href="show $p->id">{$p->nazev}</a></td>
-                <td>{$p->nazev2}</td>
-                <td>{$p->mesto}</td>
-                <td><a n:href="vyberPartnera $p->id" class="btn btn-primary">Vybrat</a></td>
-            </tr>
-
-            {if $iterator->last}</table></div>{/if}
-        {/foreach}
-        </div>    
-    </div>
+<div class="panel panel-info">
+	<div class="panel-heading">
+		<h3 n:block=title>Seznam poboček uživatele</h3>
+	</div>
+	<div class="panel-body">
+		{foreach $partners as $p}
+		{if $iterator->first}
+		<div class="table-wrap">
+			<table class="table table-striped">
+			<thead>
+			<tr>
+			  <th>Název</th>
+			  <th>Název 2</th>
+			  <th>Město</th>
+			  <th></th>
+			</tr>
+			</thead>
+			<tbody>
+			{/if}
+			<tr id="row-{$iterator->counter}">
+				 <td><a n:href="show $p->id">{$p->nazev}</a></td>
+				 <td>{$p->nazev2}</td>
+				 <td>{$p->mesto}</td>
+				 <td><a n:href="vyberPartnera $p->id" class="btn btn-primary">Vybrat</a></td>
+			</tr>
+			{if $iterator->last}</tbody></table></div>{/if}
+			{/foreach}
+	</div>    
+</div>	 
 {/block}

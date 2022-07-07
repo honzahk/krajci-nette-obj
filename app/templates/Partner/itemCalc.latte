@@ -41,9 +41,10 @@
                 </div>
             {/if}
                 <div class="row">
-                    <div class="col-xs-12 col-md-6">
-                        <div class="form-inline">
-                            {label pocet_bal /}<input n:name=pocet_bal class="input-number">
+                    <div class="col-xs-12 col-md-12">
+                        <div class="form-inline form-package">
+
+                            {label pocet_bal /}<input n:name=pocet_bal class="input-number form-control" id="text-basic" placeholder="Vložte požadovaný počet">
                         {* <div class="checkbox" n:if="$item->baleni<>$item->min_obj"><label><input type="checkbox" value="">+ půl balení</label></div>*}
                         {* <div n:if="$item->baleni<>$item->min_obj"><input type="checkbox" value="">+ půl balení</div> *}
                         {*    <span n:if="$item->baleni<>$item->min_obj">
@@ -51,11 +52,10 @@
                             </span>
                           *}
                           <label n:if="$item->baleni<>$item->min_obj" class="form-check-label pulka-checkbox" for="frm-itemEditorForm-pulka">
-                              <input n:name=pulka>+ půl balení
+                              <input class="big-checkbox" n:name=pulka>+ půl balení
                           </label>
                         </div>
                     </div>
-                    <div class="col-xs-6 col-md-4"><input n:name=send class="btn btn-primary button" value="Uložit"></div>
                     {*
                     <div class="col-xs-6 col-md-2" n:if="$item->baleni<>$item->min_obj" n:snippet="item-$item->zbozi_id-btn">
                         {if fmod($item->pocet,$item->baleni)>0}
@@ -66,7 +66,8 @@
                     </div>                    
                     *}
                 </div>
-                <div class="row">
+                <!--
+					 <div class="row">
                     <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="1">1</a></div>
                     <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="2">2</a></div>
                     <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="3">3</a></div>
@@ -86,6 +87,8 @@
                     <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="0">0</a></div>
                     <div class="col-xs-4 col-md-1"><a class="btn btn-info btn-number" data-type="BACK">BACK</a></div>
                 </div>
+					 -->
+					 <div class="form-group"><input n:name=send class="w3-red btn btn-primary button" value="Uložit zvolený počet"></div>
             </div>
         </div>
 </form>                    
