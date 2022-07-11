@@ -383,7 +383,27 @@ class PartnerPresenter extends BasePresenter
                 //    prevest ResultSet na Array (fetchAll). Toto se da resit 
                 //    ale napriklad predanim dalsiho datoveho zdroje jen 
                 //    s kategoriemi
-                $this->template->items = $items; 
+                $this->template->items = $items;
+                
+
+                $isUseTabs = true;
+                if($isUseTabs){
+                    $itemsStructured = [];
+                    foreach($items as $item){
+                        if(array_key_exists($item["kategorie_id"],$itemsStructured)==false){
+                            $itemsStructured[$item["kategorie_id"]] = [
+                                "kategorie_id" => $item["kategorie_id"],
+                                "kategorie_nazev" => $item["kategorie_nazev"],
+                                "items" => []
+                            ];
+                        }
+                        $itemsStructured[$item["kategorie_id"]]["items"][] = $item;
+                    }
+                    
+                    $this->template->itemsStructured = $itemsStructured;
+                    $this->template->kat_aktivni = 1;
+                    $this->template->setFile(dirname(__FILE__) . '/../templates/Partner/itemListTabs.latte');
+                }
             }        
         }
         
