@@ -28,17 +28,36 @@
     }
       
 }
-  
+
+.panel-partner {
+    margin-bottom: 10px!important;    
+}
+
+.zbozi-panel-info {
+    margin-bottom: 10px;    
+}
+
 .zbozi-nadpis {
-  padding-bottom: 0px!important;
+    padding-bottom: 0px!important;
 }
   
+.zbozi-nadpis h3 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-bottom: 0px;
+}
+
 .kategorie-head {
-  margin-bottom: 0px!important;
+    margin-bottom: 0px!important;
+}   
+
+.zbozi-calc {
+    padding-bottom: 0px!important;
+    padding-top: 0px!important;
 }   
 
 .zbozi-list {
-  padding-top: 0px!important;
+    padding-top: 0px!important;
 }   
 
 .kategorie-tab-content {

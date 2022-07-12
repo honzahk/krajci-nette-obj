@@ -129,9 +129,10 @@
 
     {if $user->loggedIn}
         {ifset $partnerAkt}
+            {if !$presenter->isLinkCurrent('Partner:itemCalc')}
                 <div class="row">
                     <div class="col-xs-12">
-                        <div class="panel panel-success">
+                        <div class="panel panel-success panel-partner">
                             <div class="panel-heading">
                                 <h3><a n:href="Partner:show $partnerID">{$partnerAkt['nazev']}</a></h3>
                             </div>
@@ -157,6 +158,7 @@
                         </div>
                     </div>
                 </div>
+            {/if}
         {/ifset}                        
     {/if}                        
                 <div class="row">
