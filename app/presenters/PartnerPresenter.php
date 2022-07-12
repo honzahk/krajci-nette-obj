@@ -387,7 +387,7 @@ class PartnerPresenter extends BasePresenter
                 
 
                 //************************* honza - vypsani item listu pomoci tabu; pouziti jine struktury zdrojovych dat *****************************/
-                $isUseTabs = false;
+                $isUseTabs = true;
                 if($isUseTabs){
                     $itemsStructured = [];
                     foreach($items as $item){
@@ -400,9 +400,16 @@ class PartnerPresenter extends BasePresenter
                         }
                         $itemsStructured[$item["kategorie_id"]]["items"][] = $item;
                     }
-                    
-                    $this->template->itemsStructured = $itemsStructured;
+
+                    //vzdy nastav prvni kategorii jako aktivni
                     $this->template->kat_aktivni = 1;
+
+                    //pro ukazku doscrolluj na radek zbozi s timto id
+                    $this->template->scrollToZboziId = 208;
+
+                    //tato sablona pouziva jinou strukturu zdrojovych dat
+                    $this->template->itemsStructured = $itemsStructured;
+                    //nastav adekvatni sablonu
                     $this->template->setFile(dirname(__FILE__) . '/../templates/Partner/itemListTabs.latte');
                 }
                 //*************************************************************************************************************************************/

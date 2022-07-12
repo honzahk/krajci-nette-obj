@@ -63,7 +63,7 @@
 										</div>
 										<div class="bg-list-content"> 
 											{foreach $category['items'] as $item}
-												<div class="row bgcat-{$katColor[$category['kategorie_id']-1]}"> 
+												<div id="zbozi_id-{$item['zbozi_id']}" class="row bgcat-{$katColor[$category['kategorie_id']-1]}"> 
 													<div class="col-xs-12 col-md-4"><a n:href="Partner:itemCalc $item['zbozi_id']">{$item['nazev']}</a></div>                            
 													<div class="col-xs-3 col-md-2 baleni">{$item['baleni']}</div>
 													<div class="col-xs-3 col-md-2 baleni">{$item['cena_zbozi_bez_dph']|number:2, ',', ' '}</div>
@@ -100,4 +100,15 @@
 
 
 
+{/block}
+
+{block scripts}
+<script n:syntax="double">
+    $(document).ready(function() {
+        var scrollToZboziId = {{$scrollToZboziId}};
+        var elemId = "zbozi_id-" + scrollToZboziId;
+        var elem = document.getElementById(elemId);
+        elem.scrollIntoView({behavior: "smooth"});
+    });
+</script>
 {/block}
