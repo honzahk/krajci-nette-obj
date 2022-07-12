@@ -18,23 +18,27 @@
                 <h6>{$r['datum']} - {$r['mask']}</h6>
             {/foreach *}            
         </div>
+
+		{*var $katColor = ['info','danger','success','warning']*}
+                {var $katColor = ['bramburky','snacky','tycinky','plody']}
+        <div class="container-fluid">
+            <div class="list-group">
+                <div class="row">          
+                    {foreach $items as $r}
+                        <a class="list-group-item col-xs-6 col-md-3 list-group-item-{$katColor[$r->kategorie_id-1]}" 
+                           data-toggle="tab" href="#collapse-{$r->kategorie_id}"> 
+                            {$r->kategorie_nazev}
+                        </a>
+                        {iterateWhile}
+                        {/iterateWhile $r->kategorie_id === $iterator->nextValue->kategorie_id}
+                    {/foreach}
+                </div>    
+            </div>    
+        </div>
 		<div class="panel-body">
 		
 
         {snippet itemsContainer}
-            <script>
-                (function( $ ){
-                $.fn.autowidth = function() {
-                    return this.each(function() {        
-                        $('li', this).css({'width' : (100 / $('li', this).length) + '%'})
-                    });
-                };
-                })( jQuery );
-
-                $(document).ready(function(){
-                    $('nav.full > ul').autowidth();    
-                });
-            </script>
 
             {var $katColor = ['bramburky','snacky','tycinky','plody']}
             <div id="exTab1">	

@@ -354,9 +354,12 @@ class PartnerPresenter extends BasePresenter
      * Každé zboží je pak proklikem na editaci tohoto konkrétního zboží.
      * Pokud je zadána kategorie, rozbalí se, jinak se rozbalí první kategorie
      * (to je řešeno v latte - first)
+     * Pokud je zadáno zboží a je v rozbalené kategorii, měla by se stránka 
+     * odrolovat na řádek se zbožím
      * @param int $kategorie_id
+     * @param int $zbozi_id
      */
-    public function renderItemList($kategorie_id)
+    public function renderItemList($kategorie_id, $zbozi_id)
     {                
         // pri ajaxovem volani jiz kontrola probehla
         if (!$this->isAjax()) {
@@ -387,7 +390,7 @@ class PartnerPresenter extends BasePresenter
                 
 
                 //************************* honza - vypsani item listu pomoci tabu; pouziti jine struktury zdrojovych dat *****************************/
-                $isUseTabs = true;
+                $isUseTabs = false;
                 if($isUseTabs){
                     $itemsStructured = [];
                     foreach($items as $item){
@@ -419,6 +422,7 @@ class PartnerPresenter extends BasePresenter
         if ($kategorie_id) {
             $this->template->kat_aktivni = $kategorie_id;
         }
+        $this->template->scrollToZboziId = $zbozi_id;        
         
         $zavoz = $this->partnerManager->vratZavoz($this->partnerID);
         if ($zavoz) {
@@ -435,9 +439,12 @@ class PartnerPresenter extends BasePresenter
      * Pokud je zadána kategorie, rozbalí se, jinak se rozbalí první kategorie
      * (to je řešeno v latte - first) - pokud tedy nakonec nebudou kategorie
      * v tomto zoobrazení zrušeny.
+     * Pokud je zadáno zboží a je v rozbalené kategorii, měla by se stránka 
+     * odrolovat na řádek se zbožím
      * @param int $kategorie_id
+     * @param int $zbozi_id
      */
-    public function renderItemListFav($kategorie_id)
+    public function renderItemListFav($kategorie_id, $zbozi_id)
     {                
         // pri ajaxovem volani jiz kontrola probehla
         if (!$this->isAjax()) {
@@ -466,6 +473,8 @@ class PartnerPresenter extends BasePresenter
         if ($kategorie_id) {
             $this->template->kat_aktivni = $kategorie_id;
         }
+        
+        $this->template->scrollToZboziId = $zbozi_id;                
         
         $zavoz = $this->partnerManager->vratZavoz($this->partnerID);
         if ($zavoz) {
@@ -597,10 +606,10 @@ class PartnerPresenter extends BasePresenter
         }
         if (isset($data['kategorie_id'])) {
             //$this->redirect('Partner:itemList',$data['kategorie_id']);
-            $this->redirect('Partner:'.$listParam,$data['kategorie_id']);
+            $this->redirect('Partner:'.$listParam,$data['kategorie_id'],$zbozi_id);
         } else {
             //$this->redirect('Partner:itemList');
-            $this->redirect('Partner:'.$listParam);
+            $this->redirect('Partner:'.$listParam,0,$zbozi_id);
         }
     }
 
