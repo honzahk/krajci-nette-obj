@@ -386,7 +386,8 @@ class PartnerPresenter extends BasePresenter
                 $this->template->items = $items;
                 
 
-                $isUseTabs = true;
+                //************************* honza - vypsani item listu pomoci tabu; pouziti jine struktury zdrojovych dat *****************************/
+                $isUseTabs = false;
                 if($isUseTabs){
                     $itemsStructured = [];
                     foreach($items as $item){
@@ -404,6 +405,7 @@ class PartnerPresenter extends BasePresenter
                     $this->template->kat_aktivni = 1;
                     $this->template->setFile(dirname(__FILE__) . '/../templates/Partner/itemListTabs.latte');
                 }
+                //*************************************************************************************************************************************/
             }        
         }
         
