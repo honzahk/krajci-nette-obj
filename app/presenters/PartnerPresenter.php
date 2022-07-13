@@ -300,6 +300,13 @@ class PartnerPresenter extends BasePresenter
             $this->redirect('itemList');            
         }    
         
+        $sessionSection = $this->getSession()->getSection('base');
+        if ($sessionSection->get('oblibene')) {
+            $this->template->back_url = 'itemListFav';
+        } else {
+            $this->template->back_url = 'itemList';
+        }        
+        
         $this->template->item = $itemArr;
         
         $this['itemEditorForm']->setDefaults([

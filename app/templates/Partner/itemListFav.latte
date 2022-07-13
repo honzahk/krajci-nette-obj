@@ -23,10 +23,10 @@
             <div class="row container-fluid">
                 <div class="row bg-gray-head">          
                     <div class="col-xs-12 col-md-4">Název</div>
-                    <div class="col-xs-3 col-md-2 baleni">Počet v balení</div>
+                    <div class="col-xs-3 col-md-2 baleni">Počet v kartonu</div>
                     <div class="col-xs-3 col-md-2 baleni">Cena za ks</div>
                     <div class="col-xs-3 col-md-2 baleni">Počet v košíku</div>
-                    <div class="col-xs-3 col-md-2 baleni">Balení v košíku</div>                            
+                    <div class="col-xs-3 col-md-2 baleni">Kartonů v košíku</div>                            
                 </div>
                 {foreach $items as $r}
                 <div class="bg-list-content"> 
@@ -58,7 +58,9 @@
         var scrollToZboziId = {{$scrollToZboziId}};
         var elemId = "zbozi_id-" + scrollToZboziId;
         var elem = document.getElementById(elemId);
-        elem.scrollIntoView({behavior: "smooth"});
+        var y = elem.getBoundingClientRect().top - 60;
+        //elem.scrollIntoView({top: y, behavior: "smooth"});
+        window.scrollTo({top: y, behavior: 'smooth'});
     });
 </script>
 {/block}

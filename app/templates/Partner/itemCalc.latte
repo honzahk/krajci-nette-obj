@@ -10,10 +10,10 @@
         <div class="panel-body zbozi-calc">
             <div class="container-fluid">
                 <div class="row">          
-                    <div class="col-xs-3 col-md-3 baleni">Počet v balení</div>
+                    <div class="col-xs-3 col-md-3 baleni">Počet v kartonu</div>
                     <div class="col-xs-3 col-md-3 baleni">Cena za ks</div>
                     <div class="col-xs-3 col-md-3 baleni">Počet v košíku</div>
-                    <div class="col-xs-3 col-md-3 baleni">Balení v košíku</div>
+                    <div class="col-xs-3 col-md-3 baleni">Kartonů v košíku</div>
                 </div>
                 <div class="row">          
                     <div class="col-xs-3 col-md-3 baleni">{$item->baleni}</div>
@@ -44,15 +44,15 @@
                     <div class="col-xs-12 col-md-12">
                         <div class="form-inline form-package">
 
-                            {label pocet_bal /}<input n:name=pocet_bal class="input-number form-control" id="text-basic" placeholder="Vložte požadovaný počet balení">
-                        {* <div class="checkbox" n:if="$item->baleni<>$item->min_obj"><label><input type="checkbox" value="">+ půl balení</label></div>*}
-                        {* <div n:if="$item->baleni<>$item->min_obj"><input type="checkbox" value="">+ půl balení</div> *}
+                            {label pocet_bal /}<input n:name=pocet_bal class="input-number form-control" id="text-basic" placeholder="Vložte požadovaný počet kartonů">
+                        {* <div class="checkbox" n:if="$item->baleni<>$item->min_obj"><label><input type="checkbox" value="">+ půl kartonu</label></div>*}
+                        {* <div n:if="$item->baleni<>$item->min_obj"><input type="checkbox" value="">+ půl kartonu</div> *}
                         {*    <span n:if="$item->baleni<>$item->min_obj">
                                 {label pulka}<input n:name=pulka>{/label}
                             </span>
                           *}
                           <label n:if="$item->baleni<>$item->min_obj" class="form-check-label pulka-checkbox" for="frm-itemEditorForm-pulka">
-                              <input class="big-checkbox" n:name=pulka>+ půl balení
+                              <input class="big-checkbox" n:name=pulka>+ půl kartonu
                           </label>
                         </div>
                     </div>
@@ -100,9 +100,9 @@
     <div class="panel panel-info">
         <div class="btn-group btn-group-justified">            
             {ifset $item->kategorie_id}
-            <a n:href="Partner:itemList $item->kategorie_id" class="btn btn-primary">Zpět</a>
+            <a n:href="Partner:$back_url $item->kategorie_id,$item->zbozi_id" class="btn btn-primary">Zpět</a>
             {else}
-            <a n:href="Partner:itemList" class="btn btn-primary">Zpět</a>
+            <a n:href="Partner:$back_url 0,$item->zbozi_id" class="btn btn-primary">Zpět</a>
             {/ifset}
         </div>
     </div>        
