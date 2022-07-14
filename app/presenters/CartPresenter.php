@@ -11,6 +11,9 @@ use Nette\Utils\DateTime;
 class CartPresenter extends BasePresenter
 {
     const ZPRAVA_MAX_LENGTH = 1024;
+    const SLEVA_PROCENTO = 8;
+    const SLEVA_HRANICE = 1000;
+    const MIN_PRICE = 500;
     
     /** @var Model\CartManager */
     protected $cartManager;
@@ -33,11 +36,32 @@ class CartPresenter extends BasePresenter
             if ($cartID) {
                 // kontrola, jestli v kosiku vubec je neco platneho
                 $cart = $this->cartManager->getAllItems($cartID);
+                $cartTotalPrice = $this->cartManager->getTotalPrice($cartID);                
 //                if ($cart->getRowCount() == 0) {            
 //                    $this->flashMessage('Košík je prázdný!!!','w3-red');
 //                }               
                 //$this->template->cart = $this->cartManager->getAllItems($cartID);
                 $this->template->cart = $cart;
+                $this->template->cartTotalPrice = $cartTotalPrice;
+                $this->template->minPrice = self::MIN_PRICE;
+                $this->template->povolitDokoncitObj = ($cartTotalPrice >= self::MIN_PRICE);
+                
+                // mozna sleva se ukazuje jen partnerum se zakladnim cenikem
+                // zakladni cenik => cenik_id == 1 
+                // zbyvajici hodnota do slevy
+                if ($this->partnerAktD['cenik_id'] == 1) {
+                    $this->template->slevaResit = true;
+                    $this->template->slevaProcento = self::SLEVA_PROCENTO;
+                    $this->template->slevaHranice = self::SLEVA_HRANICE;
+                    if ($cartTotalPrice < self::SLEVA_HRANICE) {
+                        $this->template->slevaZbyva = self::SLEVA_HRANICE - $cartTotalPrice;
+                    } else {
+                        $this->template->slevaZbyva = 0;
+                    }
+                } else {
+                    $this->template->slevaResit = false;
+                }
+                
             } else {
                 $this->flashMessage('Nepodařilo se vytvořit košík.','w3-red');            
             }            

@@ -6,9 +6,9 @@
         </div>
         <div class="panel-body">
             {*$cartID*}
-            {var $cartTotal = 0}
+            {* var $cartTotal = 0 *}
         {foreach $cart as $r}
-            {do $cartTotal += $r->pocet*$r->cena_zbozi_bez_dph}
+            {* do $cartTotal += $r->pocet*$r->cena_zbozi_bez_dph *}
             {if $iterator->first}
             {var $kategorie = $r->kategorie_id}
             {var $color = true}           
@@ -30,33 +30,67 @@
                 <td {*if $color}class="danger"{else}class="info"{/if*}>{$r->nazev}</td>
                 <td class="text-right">{$r->pocet}</td>
                 <td class="text-right">{= intdiv($r->pocet,$r->baleni)} {if fmod($r->pocet,$r->baleni)>0}({= fmod($r->pocet,$r->baleni)}){/if}</td>
-                <td class="text-right">{= ($r->pocet*$r->cena_zbozi_bez_dph|round:2)|number:2, ',', ' '}</td>
+                <td class="text-right">{= ($r->pocet*$r->cena_zbozi_bez_dph|round:2)|number:2, ',', ''}</td>
             </tr>
 
             {if $iterator->last}</table>{/if}
         {/foreach}            
         </div>    
+        {*
         <div class="panel-footer" n:if="$cartTotal > 0">
             Celkem bez DPH: {$cartTotal|number:2, ',', ' '}
         </div>
-		<div class="panel panel-body">
-			<div class="btn-group btn-group-justified">
-				<a n:href="Partner:itemList" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i> Upravit počty</a>
-				<a n:href="Cart:emptyCart" class="btn btn-danger"><i class="glyphicon glyphicon-erase"></i> Vyprázdnit košík</a>
-			</div>
+        *}
+        <div class="panel-footer" n:if="$cartTotalPrice > 0">
+            Celkem bez DPH: {$cartTotalPrice|number:2, ',', ' '}
+        </div>
+        <div class="panel panel-body">
+            <div class="btn-group btn-group-justified">
+                    <a n:href="Partner:itemList" class="btn btn-primary"><i class="glyphicon glyphicon-pencil"></i> Upravit objednávku</a>
+                    <a n:href="Cart:emptyCart" class="btn btn-danger"><i class="glyphicon glyphicon-erase"></i> Vyprázdnit košík</a>
+            </div>
     	</div>
     </div>
+    
+        {if $slevaResit}
+            {if $slevaZbyva}
+    <div class="panel panel-warning">
+        <div class="panel-heading">
+            <h4>Při nákupu nad {$slevaHranice|number:0, ',', ' '} Kč dostanete 
+            slevu {$slevaProcento|number:0, ',', ' '}%.</h4>
+        </div>
+        <div class="panel-body">
+            Pro získání slevy musíte objednat zboží ještě za {$slevaZbyva|number:2, ',', ' '} Kč.
+        </div>
+    </div>
+            {/if}            
+        {/if}    
+        {if $povolitDokoncitObj}        
     <div class="panel panel-success">
         <div class="panel-heading">
             <h4>Dokončení objednávky</h4>
         </div>
-		<div class="panel-body">
-			{control makeOrderForm}
-		</div>
+        {if $slevaResit}
+            {if !$slevaZbyva}
+        <div class="panel-body">
+            Dosáhli jste hranice pro přiznání slevy {$slevaProcento|number:0, ',', ' '}%.<br>
+            Sleva Vám bude vyčíslena na dodacím listu.
+        </div>
+            {/if}
+        {/if}
+        <div class="panel-body">
+                {control makeOrderForm}
+        </div>
     </div>
+        {else}
+    <div class="panel panel-danger">
+        <div class="panel-heading">
+            <h4>Minimální hodnota objednávky je {$minPrice|number:0, ',', ' '} Kč.</h4>
+        </div>            
+        <div class="panel-body">Pro dokončení objednávky musíte přidat další zboží.</div>
+    </div>        
+    {/if}
         
-        
-    
     {else}
     <div class="panel panel-info">
         <div class="panel-heading">

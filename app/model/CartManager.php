@@ -84,7 +84,7 @@ class CartManager extends BaseManager
                 JOIN ceniky_radky cr ON cr.cenik_id = p.cenik_id AND cr.zbozi_id = cz.zbozi_id AND cr.cena_bez_dph > 0
                 LEFT JOIN ceniky_akcni_radky car ON car.cenik_akcni_id = p.cenik_akcni_id AND car.zbozi_id = cz.zbozi_id AND car.prodejni_cena_bez_dph > 0
                 LEFT JOIN ceniky_akcni ca ON ca.id = p.cenik_akcni_id
-                WHERE cz.cart_id = ?", $cartid)->fetch();
+                WHERE cz.cart_id = ?", $cartid)->fetch()->total;
     }
     
     /**
