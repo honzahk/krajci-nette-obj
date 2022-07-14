@@ -26,7 +26,17 @@ class CartPresenter extends BasePresenter
     {
         $this->cartManager = $cartManager;
     }
-
+    
+    /**
+     * Funkce pro zpětné volání z editace položky.
+     * Oba parametry jsou v košíku zatím ignorovány, tedy jen tiché přesměrování.
+     * @param int $kategorie_id
+     * @param int $zbozi_id
+     */
+    public function renderFromCalc($kategorie_id, $zbozi_id) {
+        $this->redirect('Cart:default');  
+    }
+            
     public function renderDefault()
     {        
         if ($this->partnerID) {
@@ -34,6 +44,10 @@ class CartPresenter extends BasePresenter
                     $this->getUser()->getId(),$this->partnerID
             );
             if ($cartID) {
+
+                $sessionSection = $this->getSession()->getSection('base');
+                $sessionSection->set('ICback','Cart:fromCalc');
+
                 // kontrola, jestli v kosiku vubec je neco platneho
                 $cart = $this->cartManager->getAllItems($cartID);
                 $cartTotalPrice = $this->cartManager->getTotalPrice($cartID);                

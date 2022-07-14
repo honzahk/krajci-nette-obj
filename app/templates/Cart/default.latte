@@ -5,36 +5,26 @@
             <h3 n:block=title>Zboží v košíku</h3>
         </div>
         <div class="panel-body">
-            {*$cartID*}
-            {* var $cartTotal = 0 *}
+            <div class="container-fluid">
+                <div class="row bg-gray-head">          
+                    <div class="col-xs-12 col-md-5">Název</div>
+                    <div class="col-xs-2 col-md-2 baleni">Počet</div>
+                    <div class="col-xs-3 col-md-2 baleni">Kartonů</div>
+                    <div class="col-xs-3 col-md-2 baleni">Cena bez DPH</div>
+                    <div class="col-xs-3 col-md-1 baleni">&nbsp;</div>
+                </div>
         {foreach $cart as $r}
-            {* do $cartTotal += $r->pocet*$r->cena_zbozi_bez_dph *}
-            {if $iterator->first}
-            {var $kategorie = $r->kategorie_id}
-            {var $color = true}           
-            <table class="table table-striped">
-            <tr>
-              <th>Název</th>
-              <th class="text-right">Počet</th>
-              <th class="text-right">Kartonů</th>
-              <th class="text-right">Cena bez DPH</th>
-            </tr>
-            {else}
-                {if $kategorie != $r->kategorie_id}
-                    {do $kategorie = $r->kategorie_id}
-                    {do $color = !$color}           
-                {/if}
-            {/if}
-
-            <tr id="row-{$iterator->counter}">
-                <td {*if $color}class="danger"{else}class="info"{/if*}>{$r->nazev}</td>
-                <td class="text-right">{$r->pocet}</td>
-                <td class="text-right">{= intdiv($r->pocet,$r->baleni)} {if fmod($r->pocet,$r->baleni)>0}({= fmod($r->pocet,$r->baleni)}){/if}</td>
-                <td class="text-right">{= ($r->pocet*$r->cena_zbozi_bez_dph|round:2)|number:2, ',', ''}</td>
-            </tr>
-
-            {if $iterator->last}</table>{/if}
+                <div class="bg-list-content"> 
+                    <div id="zbozi_id-{$r->zbozi_id}" class="row"> 
+                        <div class="col-xs-12 col-md-5"><a n:href="Partner:itemCalc $r->zbozi_id">{$r->nazev}</a></div>
+                        <div class="col-xs-2 col-md-2 baleni">{$r->pocet}</div>
+                        <div class="col-xs-3 col-md-2 baleni">{= intdiv($r->pocet,$r->baleni)} {if fmod($r->pocet,$r->baleni)>0}({= fmod($r->pocet,$r->baleni)}){/if}</div>
+                        <div class="col-xs-3 col-md-2 baleni">{= ($r->pocet*$r->cena_zbozi_bez_dph|round:2)|number:2, ',', ''}</div>
+                        <div class="col-xs-3 col-md-1 baleni smazat"><a n:href="Partner:itemDelete $r->zbozi_id">smazat</a></div>
+                    </div>
+                </div>
         {/foreach}            
+            </div>
         </div>    
         {*
         <div class="panel-footer" n:if="$cartTotal > 0">

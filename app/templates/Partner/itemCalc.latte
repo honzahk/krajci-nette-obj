@@ -100,9 +100,9 @@
     <div class="panel panel-info">
         <div class="btn-group btn-group-justified">            
             {ifset $item->kategorie_id}
-            <a n:href="Partner:$back_url $item->kategorie_id,$item->zbozi_id" class="btn btn-primary">Zpět</a>
+            <a n:href="$back_url $item->kategorie_id,$item->zbozi_id" class="btn btn-primary">Zpět</a>
             {else}
-            <a n:href="Partner:$back_url 0,$item->zbozi_id" class="btn btn-primary">Zpět</a>
+            <a n:href="$back_url 0,$item->zbozi_id" class="btn btn-primary">Zpět</a>
             {/ifset}
         </div>
     </div>        

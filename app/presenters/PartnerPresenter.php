@@ -105,6 +105,29 @@ class PartnerPresenter extends BasePresenter
     }
         
     /**
+     * Smazání položky z košíku.
+     * @param int $zbozi_id ID zboží
+     */
+    public function actionItemDelete($zbozi_id)
+    {
+        $this->checkPartnerID();
+        
+        if (!$this->cartManager->setItem($this->getUser()->getId(),$this->partnerID,$zbozi_id,0)) {
+            $this->flashMessage('Položku se nepodařilo smazat!','w3-red');
+            $this->redirect('Partner:default');
+        }
+        
+        $sessionSection = $this->getSession()->getSection('base');
+        if ($sessionSection->get('ICback')) {
+            $redirectURL = $sessionSection->get('ICback');
+        } else {
+            $redirectURL = 'Partner:itemList';
+        }
+        $this->redirect($redirectURL,0,$zbozi_id);
+        
+    }
+    
+    /**
      * Načte seznam všech partnerů uživatele. Admin se zatím nerozlišuje - vrací
      * stejnou množinu. Pokud bych umožnil někomu opravdu hodně partnerů, pak
      * by bylo třeba zřejmě stránkovat. Ve výpisu budou odkazy, kterými se partner
@@ -301,10 +324,10 @@ class PartnerPresenter extends BasePresenter
         }    
         
         $sessionSection = $this->getSession()->getSection('base');
-        if ($sessionSection->get('oblibene')) {
-            $this->template->back_url = 'itemListFav';
+        if ($sessionSection->get('ICback')) {
+            $this->template->back_url = $sessionSection->get('ICback');
         } else {
-            $this->template->back_url = 'itemList';
+            $this->template->back_url = 'Partner:itemList';
         }        
         
         $this->template->item = $itemArr;
@@ -374,10 +397,8 @@ class PartnerPresenter extends BasePresenter
         }
         
         $sessionSection = $this->getSession()->getSection('base');
-        if ($sessionSection->get('oblibene')) {
-            $sessionSection->remove('oblibene');
-        }
-        
+        $sessionSection->set('ICback','Partner:itemList');
+                        
         if (!isset($this->template->items)) {
             
             $items = $this->partnerManager->getUserPartnerZbozi(
@@ -459,9 +480,7 @@ class PartnerPresenter extends BasePresenter
         }
 
         $sessionSection = $this->getSession()->getSection('base');
-        if (!$sessionSection->get('oblibene')) {
-            $sessionSection->set('oblibene',true);
-        }
+        $sessionSection->set('ICback','Partner:itemListFav');
         
         if (!isset($this->template->items)) {
                        
@@ -600,23 +619,23 @@ class PartnerPresenter extends BasePresenter
         }
         
         $sessionSection = $this->getSession()->getSection('base');
-        if ($sessionSection->get('oblibene')) {
-            $listParam = 'itemListFav';
+        if ($sessionSection->get('ICback')) {
+            $redirectURL = $sessionSection->get('ICback');
         } else {
-            $listParam = 'itemList';
+            $redirectURL = 'Partner:itemList';
         }
                     
         if (!$this->cartManager->setItem($this->getUser()->getId(),$this->partnerID,$zbozi_id,$pocet)) {
             $this->flashMessage('Položku se nepodařilo upravit!','w3-red');
             //$this->redirect('Partner:itemList');
-            $this->redirect('Partner:'.$listParam);
+            $this->redirect($redirectURL);
         }
         if (isset($data['kategorie_id'])) {
             //$this->redirect('Partner:itemList',$data['kategorie_id']);
-            $this->redirect('Partner:'.$listParam,$data['kategorie_id'],$zbozi_id);
+            $this->redirect($redirectURL,$data['kategorie_id'],$zbozi_id);
         } else {
             //$this->redirect('Partner:itemList');
-            $this->redirect('Partner:'.$listParam,0,$zbozi_id);
+            $this->redirect($redirectURL,0,$zbozi_id);
         }
     }
 

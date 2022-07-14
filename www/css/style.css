@@ -8,7 +8,11 @@
 }
 
 .baleni {
-    text-align: right;
+    text-align: right!important;
+}
+
+.smazat {
+    font-style: italic!important;
 }
 
 .big-checkbox {

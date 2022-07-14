@@ -45,6 +45,7 @@ final class RouterFactory
                                         'vyber' => 'vyberPartnera',
                                         'zbozi' => 'itemList',
                                         'zbozi-uprava' => 'itemCalc',
+                                        'zbozi-smaz' => 'itemDelete',
                                         'pridej-dle-posledni-obj' => 'addItemsFromLastOrder',
                                         'zbozi-oblibene' => 'itemListFav',
                                         'pridej-oblibene-dle-posledni-obj' => 'addFavItemsFromLastOrder',
