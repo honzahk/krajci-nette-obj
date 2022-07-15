@@ -587,7 +587,7 @@ class PartnerPresenter extends BasePresenter
         $form->addHidden('zbozi_id');
         $form->addHidden('baleni'); 
         $form->addHidden('kategorie_id');
-        $form->addInteger('pocet_bal', 'Balení:')
+        $form->addInteger('pocet_bal', 'Kartonů:')
                 //->setDefaultValue(0)
                 //->setHtmlAttribute('id', $id)
                 ->setHtmlAttribute('class', 'form-control input-number')
